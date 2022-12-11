@@ -11,6 +11,7 @@ on:
   push:
     tags:
       - "v*.*.*"
+  workflow_dispatch:
 
 jobs:
   test:
@@ -22,6 +23,8 @@ jobs:
           node-version: 18
       - run: npm ci
       - run: npm validate
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   publish-gpr:
     needs: test
