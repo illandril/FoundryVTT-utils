@@ -21,10 +21,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+          repo-token: ${{secrets.GITHUB_TOKEN}}
       - run: npm ci
       - run: npm validate
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   publish-gpr:
     needs: test
@@ -37,6 +36,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+          repo-token: ${{secrets.GITHUB_TOKEN}}
           registry-url: https://npm.pkg.github.com/
       - run: npm ci
       - run: npm publish
