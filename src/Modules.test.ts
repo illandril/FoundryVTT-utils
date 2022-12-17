@@ -8,16 +8,44 @@ jest.mock('./Logger');
 
 describe('logger', () => {
   it.each([
-    'Example Module',
-    'Illandril\'s Chat Enhancements',
-    'Illandril\'s Token Tooltips',
-  ])('passes module name (%s) to Logger', (name) => {
-    const module = new Module('example-module', name);
+    ['Example Module', '1.0.0'],
+    ['Example Module', '1.2.3'],
+    ['Example Module', '3.0.1'],
+    ['Illandril\'s Chat Enhancements', '1.0.0'],
+    ['Illandril\'s Token Tooltips', '1.0.0'],
+  ])('passes module title and version (%s, %s) to Logger', (title, version) => {
+    const module = new Module({ id: 'example-module', title, version });
     const logger = module.logger;
 
     expect(Logger).toBeCalledTimes(1);
-    expect(Logger).toBeCalledWith(name, undefined);
+    expect(Logger).toBeCalledWith(`${title} v${version}`, undefined);
     expect(logger).toBeInstanceOf(Logger);
+  });
+
+  it('logs "Started" with no bugs URL', () => {
+    const module = new Module({
+      id: 'example-module',
+      title: 'Example Module',
+      version: '1.0.0',
+    });
+
+    const logger = module.logger;
+    expect(logger.info).toBeCalledWith('Started');
+  });
+
+  it.each([
+    'https://www.example.com',
+    'https://github.com/illandril/FoundryVTT-chat-enhancements/issues',
+  ])('logs "Started" with the provided bugs URL (%s)', (bugsURL) => {
+    const module = new Module({
+      id: 'example-module',
+      title: 'Example Module',
+      version: '1.0.0',
+      bugs: bugsURL,
+    });
+
+    const logger = module.logger;
+    expect(logger.info).toBeCalledWith(`Started. To report bugs, go to: ${bugsURL}`);
   });
 
   it.each([
@@ -25,18 +53,27 @@ describe('logger', () => {
     '#4f0104',
     'rebeccapurple',
   ])('passes color (%s) to Logger', (color) => {
-    const module = new Module('example-module', 'Example Module', { color });
+    const module = new Module({
+      id: 'example-module',
+      title: 'Example Module',
+      version: '1.0.0',
+      color,
+    });
     const logger = module.logger;
 
     expect(Logger).toBeCalledTimes(1);
-    expect(Logger).toBeCalledWith('Example Module', color);
+    expect(Logger).toBeCalledWith('Example Module v1.0.0', color);
     expect(logger).toBeInstanceOf(Logger);
   });
 });
 
 describe('cssPrefix', () => {
   it('lazily creats cssPrefix', () => {
-    const module = new Module('example-module', 'Example Module');
+    const module = new Module({
+      id: 'example-module',
+      title: 'Example Module',
+      version: '1.0.0',
+    });
 
     expect(CSSPrefix).not.toBeCalled();
 
@@ -50,12 +87,16 @@ describe('cssPrefix', () => {
     'example-module',
     'illandril-chat-enhancements',
     'illandril-token-tooltips',
-  ])('passes module key (%s) to CSSPrefix', (key) => {
-    const module = new Module(key, 'Example Module');
+  ])('passes module id (%s) to CSSPrefix', (id) => {
+    const module = new Module({
+      id,
+      title: 'Example Module',
+      version: '1.0.0',
+    });
     const prefix = module.cssPrefix;
 
     expect(CSSPrefix).toBeCalledTimes(1);
-    expect(CSSPrefix).toBeCalledWith(key);
+    expect(CSSPrefix).toBeCalledWith(id);
     expect(prefix).toBeInstanceOf(CSSPrefix);
   });
 });
