@@ -2,5 +2,10 @@
   "extends": "./tsconfig.json",
   "exclude": [
     "src/**/*.test.ts"
-  ]
+  ],
+  "compilerOptions": {
+    "types": [
+      "@illandril/foundryvtt-types"
+    ]
+  }
 }

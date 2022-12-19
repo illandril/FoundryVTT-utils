@@ -34,4 +34,12 @@ export default class Module {
     }
     return this.#cssPrefix;
   }
+
+  localize(key: string, data?: Record<string, string>) {
+    const stringId = `${this.#id}.${key}`;
+    if (data) {
+      return game.i18n.format(stringId, data);
+    }
+    return game.i18n.localize(stringId);
+  }
 }
