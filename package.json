@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "clean": "shx rm -r dist",
+    "clean": "shx rm -rf dist",
     "build": "run-s clean build:compile build:copyjs",
     "build:compile": "tsc --project tsconfig.build.json",
     "build:copyjs": "shx cp src/tests/globals.js dist/tests/",
