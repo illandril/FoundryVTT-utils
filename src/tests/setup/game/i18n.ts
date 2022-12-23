@@ -1,2 +1,2 @@
-game.i18n.localize = () => 'mock';
-game.i18n.format = () => 'mock';
+game.i18n.localize = () => 'mock-localize';
+game.i18n.format = () => 'mock-format';

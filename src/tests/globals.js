@@ -5,6 +5,7 @@ export default {
     },
     i18n: {},
     scenes: {},
+    settings: {},
   },
   Hooks: {},
 };

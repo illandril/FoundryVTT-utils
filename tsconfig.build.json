@@ -1,7 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "exclude": [
-    "src/**/*.test.ts"
+    "src/tests",
+    "src/**/*.test.ts",
+    "src/**/*.test.types.d.ts"
   ],
   "compilerOptions": {
     "types": [

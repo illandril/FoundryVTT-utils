@@ -2,6 +2,12 @@ type Callback = ((...args: unknown[]) => void);
 
 const hookMap = new Map<string, Callback[]>();
 const hookOnceMap = new Map<string, Callback[]>();
+
+afterEach(() => {
+  hookMap.clear();
+  hookOnceMap.clear();
+});
+
 Hooks.on = (key, fn) => {
   let array = hookMap.get(key);
   if (!array) {
