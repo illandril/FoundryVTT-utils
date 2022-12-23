@@ -305,7 +305,9 @@ describe('set', () => {
       'illandril-token-tooltips',
     ] as const)('passes namespace (%s) to game.settings.set', (namespace) => {
       const settings = new Settings(namespace, localize);
-      settings.set('example', false);
+      const setting = settings.register('example', Boolean, false);
+
+      setting.set(false);
 
       expect(setSpy).toBeCalledTimes(1);
       expect(setSpy).toBeCalledWith(namespace, 'example', false);
@@ -318,7 +320,9 @@ describe('set', () => {
       'example-boolean',
     ] as const)('passes key (%s) to game.settings.set', (key) => {
       const settings = new Settings('example-module', localize);
-      settings.set(key, false);
+      const setting = settings.register(key, Boolean, false);
+
+      setting.set(false);
 
       expect(setSpy).toBeCalledTimes(1);
       expect(setSpy).toBeCalledWith('example-module', key, false);
@@ -331,7 +335,9 @@ describe('set', () => {
       false,
     ] as const)('passes value (%j) to game.settings.set', (value) => {
       const settings = new Settings('example-module', localize);
-      settings.set('example', value);
+      const setting = settings.register('example', Boolean, false);
+
+      setting.set(value);
 
       expect(setSpy).toBeCalledTimes(1);
       expect(setSpy).toBeCalledWith('example-module', 'example', value);
@@ -352,7 +358,9 @@ describe('get', () => {
       'illandril-token-tooltips',
     ] as const)('passes namespace (%s) to game.settings.get', (namespace) => {
       const settings = new Settings(namespace, localize);
-      settings.get('example');
+      const setting = settings.register('example', Boolean, false);
+
+      setting.get();
 
       expect(getSpy).toBeCalledTimes(1);
       expect(getSpy).toBeCalledWith(namespace, 'example');
@@ -365,7 +373,9 @@ describe('get', () => {
       'example-boolean',
     ] as const)('passes key (%s) to game.settings.get', (key) => {
       const settings = new Settings('example-module', localize);
-      settings.get(key);
+      const setting = settings.register(key, Boolean, false);
+
+      setting.get();
 
       expect(getSpy).toBeCalledTimes(1);
       expect(getSpy).toBeCalledWith('example-module', key);
@@ -380,7 +390,9 @@ describe('get', () => {
       getSpy.mockReturnValueOnce(mockValue);
 
       const settings = new Settings('example-module', localize);
-      const value = settings.get('example');
+      const setting = settings.register('example', Boolean, false);
+
+      const value = setting.get();
 
       expect(value).toBe(mockValue);
     });

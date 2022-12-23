@@ -53,13 +53,12 @@ export default class Settings<N extends string> {
     } else {
       pendingRegistrations.push(register);
     }
-  }
 
-  set <K extends string>(key: K, value: ValueType<N, K>) {
-    game.settings.set(this.#namespace, key, value);
-  }
-
-  get <K extends string>(key: K): ValueType<N, K> {
-    return game.settings.get(this.#namespace, key);
+    return {
+      set: (value: ValueType<N, K>) => {
+        game.settings.set(this.#namespace, key, value);
+      },
+      get: (): ValueType<N, K> => game.settings.get(this.#namespace, key),
+    };
   }
 }
