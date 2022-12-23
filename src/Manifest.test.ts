@@ -58,7 +58,7 @@ describe('getStandardFields', () => {
   "flags": {
     "allowBugReporter": true
   },
-  "changelog": "https://github.com/user/minimal-example/blob/master/CHANGELOG.md",
+  "changelog": "https://github.com/user/minimal-example/blob/main/CHANGELOG.md",
   "manifest": "https://github.com/user/minimal-example/releases/latest/download/module.json",
   "download": "https://github.com/user/minimal-example/releases/download/v1.2.3/module.zip"
 }`);
@@ -87,11 +87,11 @@ describe('getStandardFields', () => {
       media: [
         {
           type: 'screenshot',
-          url: 'https://github.com/illandril/FoundryVTT-chat-enhancements/raw/master/screenshots/example-a.png',
+          url: 'https://github.com/illandril/FoundryVTT-chat-enhancements/raw/main/screenshots/example-a.png',
         },
         {
           type: 'screenshot',
-          url: 'https://github.com/illandril/FoundryVTT-chat-enhancements/raw/master/screenshots/example-preview.png',
+          url: 'https://github.com/illandril/FoundryVTT-chat-enhancements/raw/main/screenshots/example-preview.png',
         },
       ],
     });
@@ -146,17 +146,17 @@ describe('getStandardFields', () => {
   "flags": {
     "allowBugReporter": true
   },
-  "changelog": "https://github.com/illandril/FoundryVTT-chat-enhancements/blob/master/CHANGELOG.md",
+  "changelog": "https://github.com/illandril/FoundryVTT-chat-enhancements/blob/main/CHANGELOG.md",
   "manifest": "https://github.com/illandril/FoundryVTT-chat-enhancements/releases/latest/download/module.json",
   "download": "https://github.com/illandril/FoundryVTT-chat-enhancements/releases/download/v2.0.0/module.zip",
   "media": [
     {
       "type": "screenshot",
-      "url": "https://github.com/illandril/FoundryVTT-chat-enhancements/raw/master/screenshots/example-a.png"
+      "url": "https://github.com/illandril/FoundryVTT-chat-enhancements/raw/main/screenshots/example-a.png"
     },
     {
       "type": "screenshot",
-      "url": "https://github.com/illandril/FoundryVTT-chat-enhancements/raw/master/screenshots/example-preview.png"
+      "url": "https://github.com/illandril/FoundryVTT-chat-enhancements/raw/main/screenshots/example-preview.png"
     }
   ]
 }`);
