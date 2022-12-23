@@ -59,7 +59,7 @@ export default class Settings<N extends string> {
     game.settings.set(this.#namespace, key, value);
   }
 
-  get <K extends string>(key: K) {
+  get <K extends string>(key: K): ValueType<N, K> {
     return game.settings.get(this.#namespace, key);
   }
 }
