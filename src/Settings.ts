@@ -1,16 +1,13 @@
 type ValueType<N extends string, K extends string> = ClientSettings.Values[`${N}.${K}`];
 
 type SettingConfig<N extends string, K extends string> = {
-  scope?: 'client' | 'world'
   hasHint?: boolean
-  config?: boolean
-  requiresReload?: boolean,
-  onChange?: (value: ValueType<N, K>) => void,
-};
+} & Partial<Pick<ClientSettings.Config<ValueType<N, K>>, 'config' | 'scope' | 'requiresReload'>>
+& Omit<ClientSettings.Config<ValueType<N, K>>, 'name' | 'hint' | 'type' | 'default' | 'config' | 'scope'>;
 
 type LocalizeFN = (key: string, data?: Record<string, string>) => string;
 
-type TypeArg<N extends string, K extends string> = ClientSettings.SettingConstructor<ValueType<N, K>>;
+type TypeArg<N extends string, K extends string> = ClientSettings.TypeConstructor<ValueType<N, K>>;
 
 let canRegister = false;
 const pendingRegistrations: (() => void)[] = [];
@@ -34,7 +31,7 @@ export default class Settings<N extends string> {
     hasHint,
     config = true,
     requiresReload = false,
-    onChange,
+    ...registerOptions
   }: SettingConfig<N, K> = {}) {
     const register = () => {
       game.settings.register(this.#namespace, key, {
@@ -45,7 +42,7 @@ export default class Settings<N extends string> {
         default: defaultValue,
         type,
         requiresReload,
-        onChange,
+        ...registerOptions,
       });
     };
     if (canRegister) {

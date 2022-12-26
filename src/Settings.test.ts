@@ -218,9 +218,8 @@ describe('register', () => {
         settings.register('example', Boolean, false, {});
 
         expect(registerSpy).toBeCalledTimes(1);
-        expect(registerSpy).toBeCalledWith('example-module', 'example', expect.objectContaining({
-          onChange: undefined,
-        }));
+        expect(registerSpy).toBeCalledWith('example-module', 'example', expect.any(Object));
+        expect(registerSpy.mock.lastCall?.[2]).not.toHaveProperty('onChange');
       });
 
       it('passes onChange to game.settings.register', () => {
@@ -231,6 +230,58 @@ describe('register', () => {
         expect(registerSpy).toBeCalledTimes(1);
         expect(registerSpy).toBeCalledWith('example-module', 'example', expect.objectContaining({
           onChange,
+        }));
+      });
+    });
+
+    describe('choices', () => {
+      it('defaults choices to undefined', () => {
+        const settings = new Settings('example-module', localize);
+        settings.register('example-string', String, 'sample', {});
+
+        expect(registerSpy).toBeCalledTimes(1);
+        expect(registerSpy).toBeCalledWith('example-module', 'example-string', expect.any(Object));
+        expect(registerSpy.mock.lastCall?.[2]).not.toHaveProperty('choices');
+      });
+
+      it('passes choices to game.settings.register', () => {
+        const choices = {
+          optionA: 'First',
+          optionB: 'Second',
+          optionC: 'Third',
+        };
+        const settings = new Settings('example-module', localize);
+        settings.register('example-string', String, 'sample', { choices });
+
+        expect(registerSpy).toBeCalledTimes(1);
+        expect(registerSpy).toBeCalledWith('example-module', 'example-string', expect.objectContaining({
+          choices,
+        }));
+      });
+    });
+
+    describe('range', () => {
+      it('defaults range to undefined', () => {
+        const settings = new Settings('example-module', localize);
+        settings.register('example-number', Number, 0, {});
+
+        expect(registerSpy).toBeCalledTimes(1);
+        expect(registerSpy).toBeCalledWith('example-module', 'example-number', expect.any(Object));
+        expect(registerSpy.mock.lastCall?.[2]).not.toHaveProperty('range');
+      });
+
+      it('passes range to game.settings.register', () => {
+        const range = {
+          min: 0,
+          max: 100,
+          step: 5,
+        };
+        const settings = new Settings('example-module', localize);
+        settings.register('example-number', Number, 0, { range });
+
+        expect(registerSpy).toBeCalledTimes(1);
+        expect(registerSpy).toBeCalledWith('example-module', 'example-number', expect.objectContaining({
+          range,
         }));
       });
     });
