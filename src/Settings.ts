@@ -1,13 +1,16 @@
-type ValueType<N extends string, K extends string> = ClientSettings.Values[`${N}.${K}`];
-
-type SettingConfig<N extends string, K extends string> = {
-  hasHint?: boolean
-} & Partial<Pick<ClientSettings.Config<ValueType<N, K>>, 'config' | 'scope' | 'requiresReload'>>
-& Omit<ClientSettings.Config<ValueType<N, K>>, 'name' | 'hint' | 'type' | 'default' | 'config' | 'scope'>;
-
 type LocalizeFN = (key: string, data?: Record<string, string>) => string;
 
+type ValueType<N extends string, K extends string> = ClientSettings.Values[`${N}.${K}`];
+
 type TypeArg<N extends string, K extends string> = ClientSettings.TypeConstructor<ValueType<N, K>>;
+
+type SettingOptionsWithDefaults = 'config' | 'scope' | 'requiresReload';
+type DerivedSettingsOptions = 'name' | 'hint' | 'type' | 'default';
+type SettingConfig<N extends string, K extends string> = {
+  hasHint?: boolean
+} & Partial<Pick<ClientSettings.Config<ValueType<N, K>>, SettingOptionsWithDefaults>>
+& Omit<ClientSettings.Config<ValueType<N, K>>, DerivedSettingsOptions | SettingOptionsWithDefaults>;
+
 
 let canRegister = false;
 const pendingRegistrations: (() => void)[] = [];
