@@ -43,8 +43,8 @@ export default class Settings<N extends string> {
       let choiceOptions;
       if (choices) {
         choiceOptions = {
-          choices: Object.fromEntries(choices.map((choice: string) => [
-            choice, this.#localize(`setting.${key}.choice.${choice}`),
+          choices: Object.fromEntries(choices.map((choice) => [
+            choice, this.#localize(`setting.${key}.choice.${choice as string}`),
           ])),
         };
       }
@@ -58,7 +58,7 @@ export default class Settings<N extends string> {
         requiresReload,
         ...choiceOptions,
         ...registerOptions,
-      });
+      } as ClientSettings.Config<ValueType<N, K>>);
     };
     if (canRegister) {
       register();
