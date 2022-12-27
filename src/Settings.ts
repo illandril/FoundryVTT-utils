@@ -5,10 +5,12 @@ type ValueType<N extends string, K extends string> = ClientSettings.Values[`${N}
 type TypeArg<N extends string, K extends string> = ClientSettings.TypeConstructor<ValueType<N, K>>;
 
 type SettingOptionsWithDefaults = 'config' | 'scope' | 'requiresReload';
-type DerivedSettingsOptions = 'name' | 'hint' | 'type' | 'default';
+type DerivedSettingsOptions = 'name' | 'hint' | 'type' | 'default' | 'choices';
 type SettingConfig<N extends string, K extends string> = {
   hasHint?: boolean
-} & Partial<Pick<ClientSettings.Config<ValueType<N, K>>, SettingOptionsWithDefaults>>
+  choices?: ValueType<N, K> extends string ? ValueType<N, K>[] : never
+}
+& Partial<Pick<ClientSettings.Config<ValueType<N, K>>, SettingOptionsWithDefaults>>
 & Omit<ClientSettings.Config<ValueType<N, K>>, DerivedSettingsOptions | SettingOptionsWithDefaults>;
 
 
@@ -34,9 +36,18 @@ export default class Settings<N extends string> {
     hasHint,
     config = true,
     requiresReload = false,
+    choices,
     ...registerOptions
   }: SettingConfig<N, K> = {}) {
     const register = () => {
+      let choiceOptions;
+      if (choices) {
+        choiceOptions = {
+          choices: Object.fromEntries(choices.map((choice: string) => [
+            choice, this.#localize(`setting.${key}.choice.${choice}`),
+          ])),
+        };
+      }
       game.settings.register(this.#namespace, key, {
         name: this.#localize(`setting.${key}.label`),
         hint: hasHint ? this.#localize(`setting.${key}.hint`) : undefined,
@@ -45,6 +56,7 @@ export default class Settings<N extends string> {
         default: defaultValue,
         type,
         requiresReload,
+        ...choiceOptions,
         ...registerOptions,
       });
     };

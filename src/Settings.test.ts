@@ -1,10 +1,11 @@
-const localize = jest.fn((key: string) => key.endsWith('.label') ? 'Mock Label' : 'Mock Hint');
+const localize = jest.fn<string, [string]>();
 
 let Settings: typeof import('./Settings').default;
 
 beforeEach(() => import('./Settings').then((module) => {
   Settings = module.default;
   jest.resetModules();
+  localize.mockImplementation((key: string) => key.endsWith('.label') ? 'Mock Label' : 'Mock Hint');
 }));
 
 describe('register', () => {
@@ -237,7 +238,7 @@ describe('register', () => {
     describe('choices', () => {
       it('defaults choices to undefined', () => {
         const settings = new Settings('example-module', localize);
-        settings.register('example-string', String, 'sample', {});
+        settings.register('example-string', String, 'optionA', {});
 
         expect(registerSpy).toBeCalledTimes(1);
         expect(registerSpy).toBeCalledWith('example-module', 'example-string', expect.any(Object));
@@ -245,17 +246,19 @@ describe('register', () => {
       });
 
       it('passes choices to game.settings.register', () => {
-        const choices = {
-          optionA: 'First',
-          optionB: 'Second',
-          optionC: 'Third',
-        };
+        localize.mockImplementation((key) => `LOC[${key}]`);
+
+        const choices = ['optionA', 'optionB', 'optionC'];
         const settings = new Settings('example-module', localize);
-        settings.register('example-string', String, 'sample', { choices });
+        settings.register('example-string', String, 'optionA', { choices });
 
         expect(registerSpy).toBeCalledTimes(1);
         expect(registerSpy).toBeCalledWith('example-module', 'example-string', expect.objectContaining({
-          choices,
+          choices: {
+            optionA: 'LOC[setting.example-string.choice.optionA]',
+            optionB: 'LOC[setting.example-string.choice.optionB]',
+            optionC: 'LOC[setting.example-string.choice.optionC]',
+          },
         }));
       });
     });
