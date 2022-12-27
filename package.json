@@ -17,7 +17,7 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "prepublishOnly": "run-s validate build",
-    "preversion": "npm run validate",
+    "preversion": "run-s validate build",
     "validate": "run-s type-check lint test:coverage"
   },
   "repository": {
