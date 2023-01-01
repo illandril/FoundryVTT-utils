@@ -1,8 +1,10 @@
 let Module: typeof import('./Module').default;
 let Logger: jest.SpiedClass<typeof import('./Logger').default>;
+let mockSavedValue: typeof import('./tests/setup/game/settings').mockSavedValue;
 
 beforeEach(async () => {
   Module = (await import('./Module')).default;
+  mockSavedValue = (await import('./tests/setup/game/settings')).mockSavedValue;
   const loggerModule = await import('./Logger');
   Logger = jest.spyOn(loggerModule, 'default').mockImplementation(function MockLogger(this: import('./Logger').default) {
     this.info = jest.fn();
@@ -39,24 +41,8 @@ describe('logger', () => {
     expect(logger.info).toBeCalledWith('Started');
   });
 
-  it('updates logLevel.debug when debug setting changes', () => {
-    const settingSpy: { value: boolean, onChange?: (value: boolean) => void } = {
-      value: true,
-      onChange: undefined,
-    };
-    const regSpy = jest.spyOn(game.settings, 'register').mockImplementation((module, key, { onChange }) => {
-      if (module === 'example-module' && key === 'debug') {
-        settingSpy.onChange = onChange as (value: boolean) => void;
-      }
-    });
-
-    jest.spyOn(game.settings, 'get').mockImplementation((module, key) => {
-      if (module === 'example-module' && key === 'debug') {
-        return settingSpy.value as never;
-      }
-      throw new Error(`Unexpected setting ${module}.${key}`);
-    });
-
+  it('initializes logLevel.debug to false if no saved value', () => {
+    mockSavedValue('example-module', 'debug', undefined);
 
     const module = new Module({
       id: 'example-module',
@@ -72,14 +58,53 @@ describe('logger', () => {
 
     Hooks.callAll('init');
 
-    expect(regSpy).toBeCalled();
+    expect(logLevel?.debug).toBe(false);
+  });
+
+  it.each([true, false])('initializes logLevel.debug with the saved value (%j)', (savedValue) => {
+    mockSavedValue('example-module', 'debug', savedValue);
+
+    const module = new Module({
+      id: 'example-module',
+      title: 'Example Module',
+      version: '1.0.0',
+    });
+
+    const logger = module.logger;
+    expect(logger).toBe(Logger.mock.instances.slice(-1)[0]);
+    const logLevel = Logger.mock.lastCall?.[1];
+
+    expect(logLevel?.debug).toBe(false);
+
+    Hooks.callAll('init');
+
+    expect(logLevel?.debug).toBe(savedValue);
+  });
+
+  it('updates logLevel.debug when debug setting changes', () => {
+    const module = new Module({
+      id: 'example-module',
+      title: 'Example Module',
+      version: '1.0.0',
+    });
+
+    const logger = module.logger;
+    expect(logger).toBe(Logger.mock.instances.slice(-1)[0]);
+    const logLevel = Logger.mock.lastCall?.[1];
+
+    Hooks.callAll('init');
+
+    game.settings.set('example-module', 'debug', true);
 
     expect(logLevel?.debug).toBe(true);
 
-    settingSpy.value = false;
-    settingSpy.onChange?.(false);
+    game.settings.set('example-module', 'debug', false);
 
     expect(logLevel?.debug).toBe(false);
+
+    game.settings.set('example-module', 'debug', true);
+
+    expect(logLevel?.debug).toBe(true);
   });
 
   it.each([
