@@ -1,6 +1,6 @@
 type LocalizeFN = (key: string, data?: Record<string, string>) => string;
 
-type ValueType<N extends string, K extends string> = ClientSettings.Values[`${N}.${K}`];
+type ValueType<N extends string, K extends string> = K extends 'debug' ? boolean : ClientSettings.Values[`${N}.${K}`];
 
 type TypeArg<N extends string, K extends string> = ClientSettings.TypeConstructor<ValueType<N, K>>;
 
@@ -9,17 +9,24 @@ type DerivedSettingsOptions = 'name' | 'hint' | 'type' | 'default' | 'choices';
 type SettingConfig<N extends string, K extends string> = {
   hasHint?: boolean
   choices?: ValueType<N, K> extends string ? ValueType<N, K>[] : never
+  callOnChangeOnInit?: boolean
 }
 & Partial<Pick<ClientSettings.Config<ValueType<N, K>>, SettingOptionsWithDefaults>>
 & Omit<ClientSettings.Config<ValueType<N, K>>, DerivedSettingsOptions | SettingOptionsWithDefaults>;
 
+export type Setting<T> = {
+  get(): T
+  set(value: T): void
+};
 
 let canRegister = false;
 const pendingRegistrations: (() => void)[] = [];
+let pendingDebugRegistration: (() => void);
 
 Hooks.once('init', () => {
   canRegister = true;
   pendingRegistrations.forEach((registration) => registration());
+  pendingDebugRegistration?.();
 });
 
 export default class Settings<N extends string> {
@@ -37,8 +44,17 @@ export default class Settings<N extends string> {
     config = true,
     requiresReload = false,
     choices,
+    callOnChangeOnInit,
+    onChange,
     ...registerOptions
-  }: SettingConfig<N, K> = {}) {
+  }: SettingConfig<N, K> = {}): Setting<ValueType<N, K>> {
+    const setting = {
+      set: (value: ValueType<N, K>) => {
+        game.settings.set(this.#namespace, key, value);
+      },
+      get: (): ValueType<N, K> => game.settings.get(this.#namespace, key),
+    };
+
     const register = () => {
       let choiceOptions;
       if (choices) {
@@ -51,26 +67,25 @@ export default class Settings<N extends string> {
       game.settings.register(this.#namespace, key, {
         name: this.#localize(`setting.${key}.label`),
         hint: hasHint ? this.#localize(`setting.${key}.hint`) : undefined,
-        scope,
-        config,
-        default: defaultValue,
-        type,
-        requiresReload,
+        scope, config, type, default: defaultValue,
+        requiresReload, onChange,
         ...choiceOptions,
         ...registerOptions,
       } as ClientSettings.Config<ValueType<N, K>>);
+
+      if (callOnChangeOnInit) {
+        onChange?.(setting.get());
+      }
     };
     if (canRegister) {
       register();
     } else {
-      pendingRegistrations.push(register);
+      if (key === 'debug') {
+        pendingDebugRegistration = register;
+      } else {
+        pendingRegistrations.push(register);
+      }
     }
-
-    return {
-      set: (value: ValueType<N, K>) => {
-        game.settings.set(this.#namespace, key, value);
-      },
-      get: (): ValueType<N, K> => game.settings.get(this.#namespace, key),
-    };
+    return setting;
   }
 }

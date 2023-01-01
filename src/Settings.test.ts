@@ -220,7 +220,7 @@ describe('register', () => {
 
         expect(registerSpy).toBeCalledTimes(1);
         expect(registerSpy).toBeCalledWith('example-module', 'example', expect.any(Object));
-        expect(registerSpy.mock.lastCall?.[2]).not.toHaveProperty('onChange');
+        expect(registerSpy.mock.lastCall?.[2].onChange).toBeUndefined();
       });
 
       it('passes onChange to game.settings.register', () => {
@@ -232,6 +232,39 @@ describe('register', () => {
         expect(registerSpy).toBeCalledWith('example-module', 'example', expect.objectContaining({
           onChange,
         }));
+      });
+
+      it.each([true, false])('calls onChange with current value (%j) after init if callOnChangeOnInit=true', (currentValue) => {
+        const getSpy = jest.spyOn(game.settings, 'get').mockImplementation((module, key) => {
+          if (module === 'example-module' && key === 'example') {
+            return currentValue as never;
+          }
+          throw new Error(`Unexpected setting ${module}.${key}`);
+        });
+
+        const onChange = jest.fn();
+        const settings = new Settings('example-module', localize);
+        settings.register('example', Boolean, false, { onChange, callOnChangeOnInit: true });
+
+        expect(registerSpy).toBeCalledTimes(1);
+        expect(registerSpy).toBeCalledWith('example-module', 'example', expect.objectContaining({
+          onChange,
+        }));
+        expect(getSpy).toBeCalledTimes(1);
+        expect(onChange).toBeCalledTimes(1);
+        expect(onChange).toBeCalledWith(currentValue);
+      });
+
+      it.each([false, undefined])('does not call onChange after init if callOnChangeOnInit=%j', (callOnChangeOnInit) => {
+        const onChange = jest.fn();
+        const settings = new Settings('example-module', localize);
+        settings.register('example', Boolean, false, { onChange, callOnChangeOnInit });
+
+        expect(registerSpy).toBeCalledTimes(1);
+        expect(registerSpy).toBeCalledWith('example-module', 'example', expect.objectContaining({
+          onChange,
+        }));
+        expect(onChange).not.toBeCalled();
       });
     });
 

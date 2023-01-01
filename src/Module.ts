@@ -18,8 +18,20 @@ export default class Module<N extends string> {
 
   constructor({ id, title, version, bugs, color }: ModuleOptions<N>) {
     this.#id = id;
-    this.#logger = new Logger(`${title} v${version}`, color);
     this.#settings = new Settings(id, this.localize);
+
+    const logLevel = {
+      debug: false,
+    };
+    this.#settings.register('debug', Boolean, false, {
+      scope: 'client',
+      hasHint: true,
+      callOnChangeOnInit: true,
+      onChange: (value) => {
+        logLevel.debug = value;
+      },
+    });
+    this.#logger = new Logger(`${title} v${version}`, logLevel, color);
     if (bugs) {
       this.logger.info(`Started. To report bugs, go to: ${bugs}`);
     } else {
