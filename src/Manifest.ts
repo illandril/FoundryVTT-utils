@@ -115,7 +115,7 @@ export const generate = ({
     url: baseRepoURL,
     bugs: `${baseRepoURL}/issues`,
     flags: { allowBugReporter: true },
-    changelog: `${baseRepoURL}/blob/main/CHANGELOG.md`,
+    changelog: `${baseRepoURL}/releases`,
     manifest: `${baseRepoURL}/releases/latest/download/module.json`,
     download: `${baseRepoURL}/releases/download/v${version}/module.zip`,
     media,

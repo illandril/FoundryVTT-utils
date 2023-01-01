@@ -58,7 +58,7 @@ describe('getStandardFields', () => {
   "flags": {
     "allowBugReporter": true
   },
-  "changelog": "https://github.com/user/minimal-example/blob/main/CHANGELOG.md",
+  "changelog": "https://github.com/user/minimal-example/releases",
   "manifest": "https://github.com/user/minimal-example/releases/latest/download/module.json",
   "download": "https://github.com/user/minimal-example/releases/download/v1.2.3/module.zip"
 }`);
@@ -146,7 +146,7 @@ describe('getStandardFields', () => {
   "flags": {
     "allowBugReporter": true
   },
-  "changelog": "https://github.com/illandril/FoundryVTT-chat-enhancements/blob/main/CHANGELOG.md",
+  "changelog": "https://github.com/illandril/FoundryVTT-chat-enhancements/releases",
   "manifest": "https://github.com/illandril/FoundryVTT-chat-enhancements/releases/latest/download/module.json",
   "download": "https://github.com/illandril/FoundryVTT-chat-enhancements/releases/download/v2.0.0/module.zip",
   "media": [
