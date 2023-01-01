@@ -48,7 +48,10 @@ Hooks.call = (key, ...args) => {
   let callbacks = hookMap.get(key);
   if (callbacks) {
     for (const callback of callbacks) {
-      callback(...args);
+      const callAdditional = callback(...args);
+      if (callAdditional === false) {
+        return false;
+      }
     }
   }
   callbacks = hookOnceMap.get(key);
