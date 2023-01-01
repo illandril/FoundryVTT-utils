@@ -4,9 +4,9 @@ import Settings from './Settings';
 
 interface ModuleOptions<N extends string> {
   id: N
-  title: string,
-  version: string,
-  bugs?: string,
+  title: string
+  version: string
+  bugs?: string
   color?: string
 }
 

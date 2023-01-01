@@ -20,8 +20,8 @@ export const IllandrilAuthorInfo: Author = {
 };
 
 type MediaCoreOptions = {
-  url: string,
-  caption?: string,
+  url: string
+  caption?: string
 };
 
 type MediaOptions = MediaCoreOptions & ({
@@ -78,8 +78,8 @@ type ManifestOptions = {
     systems?: NonEmptyArray<System>
     requires?: NonEmptyArray<Module>
   }
-  library?: boolean,
-  socket?: boolean,
+  library?: boolean
+  socket?: boolean
   esmodules?: NonEmptyArray<string>
   styles?: NonEmptyArray<string>
   packs?: NonEmptyArray<never> // TODO: Add packs support

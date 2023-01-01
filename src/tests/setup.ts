@@ -1,2 +1,2 @@
-import './setup/Hooks';
 import './setup/game';
+import './setup/Hooks';
