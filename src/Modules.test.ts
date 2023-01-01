@@ -69,7 +69,7 @@ describe('logger', () => {
 });
 
 describe('cssPrefix', () => {
-  it('lazily creats cssPrefix', () => {
+  it('lazily creates cssPrefix', () => {
     const module = new Module({
       id: 'example-module',
       title: 'Example Module',
@@ -82,6 +82,23 @@ describe('cssPrefix', () => {
 
     expect(CSSPrefix).toBeCalledTimes(1);
     expect(prefix).toBeInstanceOf(CSSPrefix);
+  });
+
+  it('does not re-create cssPrefix', () => {
+    const module = new Module({
+      id: 'example-module',
+      title: 'Example Module',
+      version: '1.0.0',
+    });
+
+    expect(CSSPrefix).not.toBeCalled();
+
+    const prefix = module.cssPrefix;
+    const prefix2 = module.cssPrefix;
+
+    expect(CSSPrefix).toBeCalledTimes(1);
+    expect(prefix).toBeInstanceOf(CSSPrefix);
+    expect(prefix).toBe(prefix2);
   });
 
   it.each([
