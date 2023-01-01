@@ -1,4 +1,4 @@
-type Callback = ((...args: unknown[]) => void);
+type Callback = ((...args: unknown[]) => boolean | undefined | void);
 
 const hookMap = new Map<string, Callback[]>();
 const hookOnceMap = new Map<string, Callback[]>();
@@ -40,4 +40,26 @@ Hooks.callAll = (key, ...args) => {
       callback(...args);
     }
   }
+  return true;
+};
+
+
+Hooks.call = (key, ...args) => {
+  let callbacks = hookMap.get(key);
+  if (callbacks) {
+    for (const callback of callbacks) {
+      callback(...args);
+    }
+  }
+  callbacks = hookOnceMap.get(key);
+  if (callbacks) {
+    hookOnceMap.delete(key);
+    for (const callback of callbacks) {
+      const callAdditional = callback(...args);
+      if (callAdditional === false) {
+        return false;
+      }
+    }
+  }
+  return true;
 };
