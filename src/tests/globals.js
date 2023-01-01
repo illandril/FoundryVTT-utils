@@ -7,6 +7,7 @@ export default {
     i18n: {},
     scenes: {},
     settings: {},
+    userId: 'mock-user-id',
   },
   Hooks: {},
   foundry: {
