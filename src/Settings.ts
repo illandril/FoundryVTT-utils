@@ -1,4 +1,4 @@
-type LocalizeFN = (key: string, data?: Record<string, string>) => string;
+type LocalizeFN = (key: string) => string;
 
 type ValueType<N extends string, K extends string> = K extends 'debug' ? boolean : ClientSettings.Values[`${N}.${K}`];
 
@@ -36,6 +36,28 @@ export default class Settings<N extends string> {
   constructor(namespace: N, localize: LocalizeFN) {
     this.#namespace = namespace;
     this.#localize = localize;
+  }
+
+  registerMenu(key: string, data: Omit<ClientSettings.SubmenuConfig, 'name' | 'label' | 'hint'>) {
+    const prefixedData = {
+      ...data,
+      name: `${this.#namespace}.setting.menu.${key}.name`,
+      label: `${this.#namespace}.setting.menu.${key}.label`,
+      hint: `${this.#namespace}.setting.menu.${key}.hint`,
+    };
+    const register = () => {
+      game.settings.registerMenu(this.#namespace, key, prefixedData);
+    };
+    if (canRegister) {
+      register();
+    } else {
+      pendingRegistrations.push(register);
+    }
+    return {
+      id: `${this.#namespace}--menu--${key}`,
+      title: `${this.#namespace}.setting.menu.${key}.title`,
+      template: `modules/${this.#namespace}/templates/menu-${key}.html`,
+    } as const;
   }
 
   register<K extends string>(key: K, type: TypeArg<N, K>, defaultValue: ValueType<N, K>, {

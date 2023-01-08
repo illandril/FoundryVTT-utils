@@ -29,3 +29,5 @@ game.settings.set = (module: string, key: string, value: unknown) => {
   setting.value = value;
   setting.onChange?.(value);
 };
+
+game.settings.registerMenu = () => undefined;

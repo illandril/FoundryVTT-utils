@@ -57,6 +57,7 @@ describe('cssPrefix', () => {
 describe('localize', () => {
   const localizeSpy = jest.spyOn(game.i18n, 'localize');
   const formatSpy = jest.spyOn(game.i18n, 'format');
+  const hasSpy = jest.spyOn(game.i18n, 'has');
 
   it('calls game.i18n.localize with no data', () => {
     const module = new Module({ id: 'example-module', title: 'Example Module', version: '1.0.0' });
@@ -69,6 +70,7 @@ describe('localize', () => {
     expect(value).toBe('The localized string');
     expect(localizeSpy).toBeCalledWith('example-module.test.string');
     expect(formatSpy).not.toBeCalled();
+    expect(hasSpy).not.toBeCalled();
   });
 
   it('calls game.i18n.format with data', () => {
@@ -82,5 +84,34 @@ describe('localize', () => {
     expect(value).toBe('The localized string');
     expect(formatSpy).toBeCalledWith('example-module.test.string', { data: 'value' });
     expect(localizeSpy).not.toBeCalled();
+    expect(hasSpy).not.toBeCalled();
+  });
+
+  it('returns undefined for missing optional strings', () => {
+    const module = new Module({ id: 'example-module', title: 'Example Module', version: '1.0.0' });
+
+    localizeSpy.mockReturnValueOnce('The localized string');
+    hasSpy.mockReturnValueOnce(false);
+
+    const value = module.localize('test.string', undefined, true);
+
+    expect(value).toBeUndefined();
+    expect(hasSpy).toBeCalledWith('example-module.test.string');
+    expect(localizeSpy).not.toBeCalled();
+    expect(formatSpy).not.toBeCalled();
+  });
+
+  it('returns value for existing optional strings', () => {
+    const module = new Module({ id: 'example-module', title: 'Example Module', version: '1.0.0' });
+
+    localizeSpy.mockReturnValueOnce('The localized string');
+    hasSpy.mockReturnValueOnce(true);
+
+    const value = module.localize('test.string', undefined, true);
+
+    expect(value).toBe('The localized string');
+    expect(hasSpy).toBeCalledWith('example-module.test.string');
+    expect(localizeSpy).toBeCalledWith('example-module.test.string');
+    expect(formatSpy).not.toBeCalled();
   });
 });
