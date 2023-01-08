@@ -2,6 +2,8 @@ import failOnConsole from 'jest-fail-on-console';
 import './setup/game';
 import './setup/Hooks';
 
+Math.clamped = (num, min, max) => Math.min(max, Math.max(num, min));
+
 failOnConsole({
   shouldFailOnAssert: true,
   shouldFailOnError: true,

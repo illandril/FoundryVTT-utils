@@ -17,4 +17,18 @@ export default {
       SORT_INTEGER_DENSITY: 100000,
     },
   },
+  dnd5e: {
+    config: {
+      hitDieTypes: ['d4', 'd6', 'd8', 'd10', 'd12'],
+      maxLevel: 20,
+      spellProgression: {
+        none: 'None',
+        full: 'Full Caster',
+        half: 'Half Caster',
+        third: 'Third Caster',
+        pact: 'Pact Magic',
+        artificer: 'Artificer',
+      },
+    },
+  },
 };
