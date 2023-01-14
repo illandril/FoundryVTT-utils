@@ -38,7 +38,10 @@ export default class Settings<N extends string> {
     this.#localize = localize;
   }
 
-  registerMenu(key: string, data: Omit<ClientSettings.SubmenuConfig, 'name' | 'label' | 'hint'>) {
+  registerMenu<
+    ObjectType extends object,
+    Options extends FormApplicationOptions,
+  >(key: string, data: Omit<ClientSettings.SubmenuConfig<ObjectType, Options>, 'name' | 'label' | 'hint'>) {
     const prefixedData = {
       ...data,
       name: `${this.#namespace}.setting.menu.${key}.name`,

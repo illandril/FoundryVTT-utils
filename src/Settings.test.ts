@@ -12,11 +12,25 @@ beforeEach(() => import('./Settings').then((module) => {
 describe('registerMenu', () => {
   const registerMenuSpy = jest.spyOn(game.settings, 'registerMenu');
 
-  const testMenuConfig: Omit<ClientSettings.SubmenuConfig, 'name' | 'label' | 'hint'> = {
+  type MyMenuOptions = { myOption: boolean } & FormApplicationOptions;
+  class MyMenu extends FormApplication<never, MyMenuOptions> {
+    constructor(object?: never, options?: MyMenuOptions) {
+      super(object, options);
+    }
+
+    static get defaultOptions() {
+      return {
+        ...super.defaultOptions,
+        myOption: true,
+      };
+    }
+  }
+
+  const testMenuConfig = {
     icon: 'fas fa-bars',
-    type: {} as typeof FormApplication,
+    type: MyMenu,
     restricted: true,
-  };
+  } as const;
 
   describe('pre-initialized', () => {
     beforeEach(() => {
@@ -176,15 +190,11 @@ describe('registerMenu', () => {
 
     it('passes type to game.setting.registerMenu', () => {
       const settings = new Settings('example-module', localize);
-      const type = {} as typeof FormApplication;
-      settings.registerMenu('example', {
-        ...testMenuConfig,
-        type,
-      });
+      settings.registerMenu('example', testMenuConfig);
 
       expect(registerMenuSpy).toBeCalledTimes(1);
       expect(registerMenuSpy).toBeCalledWith('example-module', 'example', expect.objectContaining({
-        type,
+        type: MyMenu,
       }));
     });
 
