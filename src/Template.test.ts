@@ -4,12 +4,14 @@ const module = new Module({
   id: 'template-test', title: 'Template Test Module', version: '1.2.3',
 });
 
-it('should call getTemplate immediately', () => {
+it('should call getTemplate on init', () => {
   const getTemplateSpy = jest.spyOn(window, 'getTemplate');
+
+  module.registerTemplate('testTemplate.html');
 
   expect(getTemplateSpy).not.toBeCalled();
 
-  module.registerTemplate('testTemplate.html');
+  Hooks.callAll('init');
 
   expect(getTemplateSpy).toBeCalledTimes(1);
   expect(getTemplateSpy).toBeCalledWith('modules/template-test/templates/testTemplate.html');

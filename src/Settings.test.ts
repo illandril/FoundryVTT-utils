@@ -14,7 +14,7 @@ describe('registerMenu', () => {
 
   const testMenuConfig: Omit<ClientSettings.SubmenuConfig, 'name' | 'label' | 'hint'> = {
     icon: 'fas fa-bars',
-    type: {} as FormApplication,
+    type: {} as typeof FormApplication,
     restricted: true,
   };
 
@@ -176,7 +176,7 @@ describe('registerMenu', () => {
 
     it('passes type to game.setting.registerMenu', () => {
       const settings = new Settings('example-module', localize);
-      const type = {} as FormApplication;
+      const type = {} as typeof FormApplication;
       settings.registerMenu('example', {
         ...testMenuConfig,
         type,
