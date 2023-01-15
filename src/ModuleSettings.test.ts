@@ -545,9 +545,11 @@ describe('register', () => {
       it('passes choices to game.setting.register', () => {
         localize.mockImplementation((key) => `LOC[${key}]`);
 
-        const choices = ['optionA', 'optionB', 'optionC'];
+        type ChoiceType = 'optionA' | 'optionB' | 'optionC';
         const settings = new ModuleSettings('example-module', localize);
-        settings.register('example-string', String, 'optionA', { choices });
+        settings.register<ChoiceType>('example-string', String, 'optionA', {
+          choices: ['optionA', 'optionB', 'optionC'],
+        });
 
         expect(registerSpy).toBeCalledTimes(1);
         expect(registerSpy).toBeCalledWith('example-module', 'example-string', expect.objectContaining({

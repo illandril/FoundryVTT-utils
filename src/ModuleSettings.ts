@@ -8,7 +8,7 @@ type RegisterOptions<T> = {
   requiresReload?: ClientSettings.Config<T>['requiresReload']
   onChange?: ClientSettings.Config<T>['onChange']
   range?: ClientSettings.Config<T>['range']
-  choices?: T extends string ? T[] : never
+  choices?: (T extends string ? T : never)[]
 };
 
 type RegisterMenuOptions<
