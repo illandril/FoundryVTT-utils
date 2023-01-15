@@ -1,3 +1,3 @@
-export { default as Module } from './Module';
+export { default as ModuleUtils } from './ModuleUtils';
 export * as Manifest from './Manifest';
 export * from './utils';

@@ -1,11 +1,11 @@
 import CSSPrefix from './CSSPrefix';
-import Module from './Module';
+import ModuleUtils from './ModuleUtils';
 
 jest.mock('./CSSPrefix');
 
 describe('cssPrefix', () => {
   it('lazily creates cssPrefix', () => {
-    const module = new Module({
+    const module = new ModuleUtils({
       id: 'example-module',
       title: 'Example Module',
       version: '1.0.0',
@@ -20,7 +20,7 @@ describe('cssPrefix', () => {
   });
 
   it('does not re-create cssPrefix', () => {
-    const module = new Module({
+    const module = new ModuleUtils({
       id: 'example-module',
       title: 'Example Module',
       version: '1.0.0',
@@ -41,7 +41,7 @@ describe('cssPrefix', () => {
     'illandril-chat-enhancements',
     'illandril-token-tooltips',
   ])('passes module id (%s) to CSSPrefix', (id) => {
-    const module = new Module({
+    const module = new ModuleUtils({
       id,
       title: 'Example Module',
       version: '1.0.0',
@@ -60,7 +60,7 @@ describe('localize', () => {
   const hasSpy = jest.spyOn(game.i18n, 'has');
 
   it('calls game.i18n.localize with no data', () => {
-    const module = new Module({ id: 'example-module', title: 'Example Module', version: '1.0.0' });
+    const module = new ModuleUtils({ id: 'example-module', title: 'Example Module', version: '1.0.0' });
 
     expect(localizeSpy).not.toBeCalled();
     localizeSpy.mockReturnValueOnce('The localized string');
@@ -74,7 +74,7 @@ describe('localize', () => {
   });
 
   it('calls game.i18n.format with data', () => {
-    const module = new Module({ id: 'example-module', title: 'Example Module', version: '1.0.0' });
+    const module = new ModuleUtils({ id: 'example-module', title: 'Example Module', version: '1.0.0' });
 
     expect(formatSpy).not.toBeCalled();
     formatSpy.mockReturnValueOnce('The localized string');
@@ -88,7 +88,7 @@ describe('localize', () => {
   });
 
   it('returns undefined for missing optional strings', () => {
-    const module = new Module({ id: 'example-module', title: 'Example Module', version: '1.0.0' });
+    const module = new ModuleUtils({ id: 'example-module', title: 'Example Module', version: '1.0.0' });
 
     localizeSpy.mockReturnValueOnce('The localized string');
     hasSpy.mockReturnValueOnce(false);
@@ -102,7 +102,7 @@ describe('localize', () => {
   });
 
   it('returns value for existing optional strings', () => {
-    const module = new Module({ id: 'example-module', title: 'Example Module', version: '1.0.0' });
+    const module = new ModuleUtils({ id: 'example-module', title: 'Example Module', version: '1.0.0' });
 
     localizeSpy.mockReturnValueOnce('The localized string');
     hasSpy.mockReturnValueOnce(true);

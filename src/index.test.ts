@@ -1,17 +1,17 @@
 import * as Manifest from './Manifest';
-import Module from './Module';
+import ModuleUtils from './ModuleUtils';
 import * as utils from './utils';
 import * as index from './index';
 
 jest.mock('./Manifest');
-jest.mock('./Module');
+jest.mock('./ModuleUtils');
 
 it('exports Manifest', () => {
   expect(index.Manifest).toBe(Manifest);
 });
 
 it('exports Module', () => {
-  expect(index.Module).toBe(Module);
+  expect(index.ModuleUtils).toBe(ModuleUtils);
 });
 
 it.each(Object.keys(utils) as (keyof typeof utils)[])('exports utils.%s', (key) => {
@@ -22,7 +22,7 @@ it.each(Object.keys(utils) as (keyof typeof utils)[])('exports utils.%s', (key) 
 it('exports only intended values', () => {
   const expectedKeys: string[] = [
     'Manifest',
-    'Module',
+    'ModuleUtils',
     ...Object.keys(utils),
   ];
   const keys = Object.keys(index);

@@ -1,8 +1,8 @@
 type LocalizeFN = (key: string) => string;
 
-type ValueType<N extends string, K extends string> = K extends 'debug' ? boolean : ClientSettings.Values[`${N}.${K}`];
+type ValueType<N extends string, K extends string> = ClientSettings.Values[`${N}.${K}`];
 
-type TypeArg<N extends string, K extends string> = ClientSettings.TypeConstructor<ValueType<N, K>>;
+type TypeArg<N extends string, K extends string> = K extends 'debug' ? typeof Boolean : ClientSettings.TypeConstructor<ValueType<N, K>>;
 
 type SettingOptionsWithDefaults = 'config' | 'scope' | 'requiresReload';
 type DerivedSettingsOptions = 'name' | 'hint' | 'type' | 'default' | 'choices';

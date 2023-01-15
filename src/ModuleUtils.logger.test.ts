@@ -1,9 +1,9 @@
-let Module: typeof import('./Module').default;
+let ModuleUtils: typeof import('./ModuleUtils').default;
 let Logger: jest.SpiedClass<typeof import('./Logger').default>;
 let mockSavedValue: typeof import('./tests/setup/game/settings').mockSavedValue;
 
 beforeEach(async () => {
-  Module = (await import('./Module')).default;
+  ModuleUtils = (await import('./ModuleUtils')).default;
   mockSavedValue = (await import('./tests/setup/game/settings')).mockSavedValue;
   const loggerModule = await import('./Logger');
   Logger = jest.spyOn(loggerModule, 'default').mockImplementation(function MockLogger(this: import('./Logger').default) {
@@ -22,7 +22,7 @@ describe('logger', () => {
     ['Illandril\'s Chat Enhancements', '1.0.0'],
     ['Illandril\'s Token Tooltips', '1.0.0'],
   ])('passes module title and version (%s, %s) to Logger', (title, version) => {
-    const module = new Module({ id: 'example-module', title, version });
+    const module = new ModuleUtils({ id: 'example-module', title, version });
     const logger = module.logger;
 
     expect(Logger).toBeCalledTimes(1);
@@ -31,7 +31,7 @@ describe('logger', () => {
   });
 
   it('logs "Started" with no bugs URL', () => {
-    const module = new Module({
+    const module = new ModuleUtils({
       id: 'example-module',
       title: 'Example Module',
       version: '1.0.0',
@@ -44,7 +44,7 @@ describe('logger', () => {
   it('initializes logLevel.debug to false if no saved value', () => {
     mockSavedValue('example-module', 'debug', undefined);
 
-    const module = new Module({
+    const module = new ModuleUtils({
       id: 'example-module',
       title: 'Example Module',
       version: '1.0.0',
@@ -64,7 +64,7 @@ describe('logger', () => {
   it.each([true, false])('initializes logLevel.debug with the saved value (%j)', (savedValue) => {
     mockSavedValue('example-module', 'debug', savedValue);
 
-    const module = new Module({
+    const module = new ModuleUtils({
       id: 'example-module',
       title: 'Example Module',
       version: '1.0.0',
@@ -82,7 +82,7 @@ describe('logger', () => {
   });
 
   it('updates logLevel.debug when debug setting changes', () => {
-    const module = new Module({
+    const module = new ModuleUtils({
       id: 'example-module',
       title: 'Example Module',
       version: '1.0.0',
@@ -111,7 +111,7 @@ describe('logger', () => {
     'https://www.example.com',
     'https://github.com/illandril/FoundryVTT-chat-enhancements/issues',
   ])('logs "Started" with the provided bugs URL (%s)', (bugsURL) => {
-    const module = new Module({
+    const module = new ModuleUtils({
       id: 'example-module',
       title: 'Example Module',
       version: '1.0.0',
@@ -127,7 +127,7 @@ describe('logger', () => {
     '#4f0104',
     'rebeccapurple',
   ])('passes color (%s) to Logger', (color) => {
-    const module = new Module({
+    const module = new ModuleUtils({
       id: 'example-module',
       title: 'Example Module',
       version: '1.0.0',

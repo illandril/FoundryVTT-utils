@@ -1,6 +1,6 @@
 import CSSPrefix from './CSSPrefix';
 import Logger from './Logger';
-import Settings from './Settings';
+import ModuleSettings from './ModuleSettings';
 import Template from './Template';
 
 interface ModuleOptions<N extends string> {
@@ -11,10 +11,10 @@ interface ModuleOptions<N extends string> {
   color?: string
 }
 
-export default class Module<N extends string> {
+export default class ModuleUtils<N extends string> {
   readonly #id: N;
   readonly #logger: Logger;
-  readonly #settings: Settings<N>;
+  readonly #settings: ModuleSettings<N>;
   #cssPrefix?: CSSPrefix;
 
   constructor({ id, title, version, bugs, color }: ModuleOptions<N>) {
@@ -22,7 +22,7 @@ export default class Module<N extends string> {
     this.localize = localize;
 
     this.#id = id;
-    this.#settings = new Settings(id, localize);
+    this.#settings = new ModuleSettings(id, localize);
 
     const logLevel = {
       debug: false,

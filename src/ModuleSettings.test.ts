@@ -1,9 +1,9 @@
 const localize = jest.fn<string, [string]>();
 
-let Settings: typeof import('./Settings').default;
+let ModuleSettings: typeof import('./ModuleSettings').default;
 
-beforeEach(() => import('./Settings').then((module) => {
-  Settings = module.default;
+beforeEach(() => import('./ModuleSettings').then((module) => {
+  ModuleSettings = module.default;
   jest.resetModules();
   localize.mockImplementation((key: string) => key.endsWith('.label') ? 'Mock Label' : 'Mock Hint');
 }));
@@ -43,7 +43,7 @@ describe('registerMenu', () => {
       'illandril-token-tooltips',
     ] as const)('namespace: %s', (namespace) => {
       it('passes namespace to game.setting.registerMenu', () => {
-        const settings = new Settings(namespace, localize);
+        const settings = new ModuleSettings(namespace, localize);
         settings.registerMenu('example', testMenuConfig);
 
         expect(registerMenuSpy).toBeCalledTimes(1);
@@ -51,7 +51,7 @@ describe('registerMenu', () => {
       });
 
       it('uses namespace to prefix name', () => {
-        const settings = new Settings(namespace, localize);
+        const settings = new ModuleSettings(namespace, localize);
         settings.registerMenu('example', testMenuConfig);
 
         expect(registerMenuSpy).toBeCalledTimes(1);
@@ -61,7 +61,7 @@ describe('registerMenu', () => {
       });
 
       it('uses namespace to prefix label', () => {
-        const settings = new Settings(namespace, localize);
+        const settings = new ModuleSettings(namespace, localize);
         settings.registerMenu('example', testMenuConfig);
 
         expect(registerMenuSpy).toBeCalledTimes(1);
@@ -71,7 +71,7 @@ describe('registerMenu', () => {
       });
 
       it('uses namespace to prefix hint', () => {
-        const settings = new Settings(namespace, localize);
+        const settings = new ModuleSettings(namespace, localize);
         settings.registerMenu('example', testMenuConfig);
 
         expect(registerMenuSpy).toBeCalledTimes(1);
@@ -81,7 +81,7 @@ describe('registerMenu', () => {
       });
 
       it('uses namespace to prefix FormApplication ID', () => {
-        const settings = new Settings(namespace, localize);
+        const settings = new ModuleSettings(namespace, localize);
 
         const formApplicationOptions = settings.registerMenu('example', testMenuConfig);
 
@@ -89,7 +89,7 @@ describe('registerMenu', () => {
       });
 
       it('uses namespace to prefix FormApplication title', () => {
-        const settings = new Settings(namespace, localize);
+        const settings = new ModuleSettings(namespace, localize);
 
         const formApplicationOptions = settings.registerMenu('example', testMenuConfig);
 
@@ -97,7 +97,7 @@ describe('registerMenu', () => {
       });
 
       it('uses namespace in FormApplication template', () => {
-        const settings = new Settings(namespace, localize);
+        const settings = new ModuleSettings(namespace, localize);
 
         const formApplicationOptions = settings.registerMenu('example', testMenuConfig);
 
@@ -110,7 +110,7 @@ describe('registerMenu', () => {
       'sample',
     ] as const)('key: %s', (key) => {
       it('passes key to game.setting.registerMenu', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.registerMenu(key, testMenuConfig);
 
         expect(registerMenuSpy).toBeCalledTimes(1);
@@ -118,7 +118,7 @@ describe('registerMenu', () => {
       });
 
       it('uses key in name', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.registerMenu(key, testMenuConfig);
 
         expect(registerMenuSpy).toBeCalledTimes(1);
@@ -128,7 +128,7 @@ describe('registerMenu', () => {
       });
 
       it('uses key in label', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.registerMenu(key, testMenuConfig);
 
         expect(registerMenuSpy).toBeCalledTimes(1);
@@ -138,7 +138,7 @@ describe('registerMenu', () => {
       });
 
       it('uses key in hint', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.registerMenu(key, testMenuConfig);
 
         expect(registerMenuSpy).toBeCalledTimes(1);
@@ -148,7 +148,7 @@ describe('registerMenu', () => {
       });
 
       it('uses key in FormApplication ID', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
 
         const formApplicationOptions = settings.registerMenu(key, testMenuConfig);
 
@@ -156,7 +156,7 @@ describe('registerMenu', () => {
       });
 
       it('uses key in FormApplication title', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
 
         const formApplicationOptions = settings.registerMenu(key, testMenuConfig);
 
@@ -164,7 +164,7 @@ describe('registerMenu', () => {
       });
 
       it('uses key in FormApplication template', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
 
         const formApplicationOptions = settings.registerMenu(key, testMenuConfig);
 
@@ -176,7 +176,7 @@ describe('registerMenu', () => {
       'fas fa-bars',
       'my-icon',
     ])('passes icon (%s) to game.setting.registerMenu', (icon) => {
-      const settings = new Settings('example-module', localize);
+      const settings = new ModuleSettings('example-module', localize);
       settings.registerMenu('example', {
         ...testMenuConfig,
         icon,
@@ -189,7 +189,7 @@ describe('registerMenu', () => {
     });
 
     it('passes type to game.setting.registerMenu', () => {
-      const settings = new Settings('example-module', localize);
+      const settings = new ModuleSettings('example-module', localize);
       settings.registerMenu('example', testMenuConfig);
 
       expect(registerMenuSpy).toBeCalledTimes(1);
@@ -199,7 +199,7 @@ describe('registerMenu', () => {
     });
 
     it.each([true, false])('passes restricted (%j) to game.setting.registerMenu', (restricted) => {
-      const settings = new Settings('example-module', localize);
+      const settings = new ModuleSettings('example-module', localize);
       settings.registerMenu('example', {
         ...testMenuConfig,
         restricted,
@@ -213,7 +213,7 @@ describe('registerMenu', () => {
   });
 
   it('delays register until after init hook', () => {
-    const settings = new Settings('example-module', localize);
+    const settings = new ModuleSettings('example-module', localize);
 
     settings.registerMenu('example', testMenuConfig);
 
@@ -230,7 +230,7 @@ describe('registerMenu', () => {
   });
 
   it('registers all settings regisetered before init after init hook', () => {
-    const settings = new Settings('example-module', localize);
+    const settings = new ModuleSettings('example-module', localize);
 
     settings.registerMenu('example1', testMenuConfig);
     settings.registerMenu('example2', testMenuConfig);
@@ -253,7 +253,7 @@ describe('registerMenu', () => {
   });
 
   it('does not double register if init hook triggers twice', () => {
-    const settings = new Settings('example-module', localize);
+    const settings = new ModuleSettings('example-module', localize);
 
     settings.registerMenu('example', testMenuConfig);
 
@@ -285,7 +285,7 @@ describe('register', () => {
         'illandril-chat-enhancements',
         'illandril-token-tooltips',
       ] as const)('passes namespace (%s) to game.setting.register', (namespace) => {
-        const settings = new Settings(namespace, localize);
+        const settings = new ModuleSettings(namespace, localize);
         settings.register('example', Boolean, false);
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -297,8 +297,9 @@ describe('register', () => {
       it.each([
         'example',
         'example-boolean',
+        'debug',
       ] as const)('passes key (%s) to game.setting.register and localize', (key) => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register(key, Boolean, false);
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -313,7 +314,7 @@ describe('register', () => {
 
     describe('type', () => {
       it('passes correct type for boolean settings', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example-boolean', Boolean, false);
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -323,7 +324,7 @@ describe('register', () => {
       });
 
       it('passes correct type for number settings', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example-number', Number, 0);
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -333,7 +334,7 @@ describe('register', () => {
       });
 
       it('passes correct type for string settings', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example-string', String, '');
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -343,7 +344,7 @@ describe('register', () => {
       });
 
       it('passes correct type for object settings', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example-object', Object, {});
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -355,7 +356,7 @@ describe('register', () => {
 
     describe('default', () => {
       it.each([-1, 0, 1, 2, 3, 5, 8, 13])('passes correct default for number settings (%i)', (defaultValue) => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example-number', Number, defaultValue);
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -367,7 +368,7 @@ describe('register', () => {
 
     describe('hint', () => {
       it('includes a localized hint if hasHint is true', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example', Boolean, false, { hasHint: true });
 
         expect(localize).toBeCalledTimes(2);
@@ -382,7 +383,7 @@ describe('register', () => {
       });
 
       it('does not include a hint if hasHint is false', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example', Boolean, false, { hasHint: false });
 
         expect(localize).toBeCalledTimes(1);
@@ -396,7 +397,7 @@ describe('register', () => {
       });
 
       it('does not include a hint if hasHint not specified', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example', Boolean, false, {});
 
         expect(localize).toBeCalledTimes(1);
@@ -412,7 +413,7 @@ describe('register', () => {
 
     describe('scope', () => {
       it('defaults scope to world', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example', Boolean, false, {});
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -422,7 +423,7 @@ describe('register', () => {
       });
 
       it.each(['client', 'world'] as const)('passes scope (%s) to game.setting.register', (scope) => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example', Boolean, false, { scope });
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -434,7 +435,7 @@ describe('register', () => {
 
     describe('config', () => {
       it('defaults config to true', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example', Boolean, false, {});
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -444,7 +445,7 @@ describe('register', () => {
       });
 
       it.each([true, false])('passes config (%j) to game.setting.register', (config) => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example', Boolean, false, { config });
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -456,7 +457,7 @@ describe('register', () => {
 
     describe('requiresReload', () => {
       it('defaults requiresReload to false', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example', Boolean, false, {});
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -466,7 +467,7 @@ describe('register', () => {
       });
 
       it.each([true, false])('passes requiresReload (%j) to game.setting.register', (requiresReload) => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example', Boolean, false, { requiresReload });
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -478,7 +479,7 @@ describe('register', () => {
 
     describe('onChange', () => {
       it('defaults onChange to undefined', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example', Boolean, false, {});
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -488,7 +489,7 @@ describe('register', () => {
 
       it('passes onChange to game.setting.register', () => {
         const onChange = () => undefined;
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example', Boolean, false, { onChange });
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -506,7 +507,7 @@ describe('register', () => {
         });
 
         const onChange = jest.fn();
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example', Boolean, false, { onChange, callOnChangeOnInit: true });
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -520,7 +521,7 @@ describe('register', () => {
 
       it.each([false, undefined])('does not call onChange after init if callOnChangeOnInit=%j', (callOnChangeOnInit) => {
         const onChange = jest.fn();
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example', Boolean, false, { onChange, callOnChangeOnInit });
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -533,7 +534,7 @@ describe('register', () => {
 
     describe('choices', () => {
       it('defaults choices to undefined', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example-string', String, 'optionA', {});
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -545,7 +546,7 @@ describe('register', () => {
         localize.mockImplementation((key) => `LOC[${key}]`);
 
         const choices = ['optionA', 'optionB', 'optionC'];
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example-string', String, 'optionA', { choices });
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -561,7 +562,7 @@ describe('register', () => {
 
     describe('range', () => {
       it('defaults range to undefined', () => {
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example-number', Number, 0, {});
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -575,7 +576,7 @@ describe('register', () => {
           max: 100,
           step: 5,
         };
-        const settings = new Settings('example-module', localize);
+        const settings = new ModuleSettings('example-module', localize);
         settings.register('example-number', Number, 0, { range });
 
         expect(registerSpy).toBeCalledTimes(1);
@@ -587,7 +588,7 @@ describe('register', () => {
   });
 
   it('delays register until after init hook', () => {
-    const settings = new Settings('example-module', localize);
+    const settings = new ModuleSettings('example-module', localize);
 
     settings.register('example', Boolean, false);
 
@@ -604,7 +605,7 @@ describe('register', () => {
   });
 
   it('registers all settings regisetered before init after init hook', () => {
-    const settings = new Settings('example-module', localize);
+    const settings = new ModuleSettings('example-module', localize);
 
     settings.register('example', Boolean, false);
     settings.register('example-string', String, 'sample');
@@ -627,7 +628,7 @@ describe('register', () => {
   });
 
   it('does not double register if init hook triggers twice', () => {
-    const settings = new Settings('example-module', localize);
+    const settings = new ModuleSettings('example-module', localize);
 
     settings.register('example', Boolean, false);
 
@@ -654,7 +655,7 @@ describe('set', () => {
       'illandril-chat-enhancements',
       'illandril-token-tooltips',
     ] as const)('passes namespace (%s) to game.setting.set', (namespace) => {
-      const settings = new Settings(namespace, localize);
+      const settings = new ModuleSettings(namespace, localize);
       const setting = settings.register('example', Boolean, false);
 
       setting.set(false);
@@ -669,7 +670,7 @@ describe('set', () => {
       'example',
       'example-boolean',
     ] as const)('passes key (%s) to game.setting.set', (key) => {
-      const settings = new Settings('example-module', localize);
+      const settings = new ModuleSettings('example-module', localize);
       const setting = settings.register(key, Boolean, false);
 
       setting.set(false);
@@ -684,7 +685,7 @@ describe('set', () => {
       true,
       false,
     ] as const)('passes value (%j) to game.setting.set', (value) => {
-      const settings = new Settings('example-module', localize);
+      const settings = new ModuleSettings('example-module', localize);
       const setting = settings.register('example', Boolean, false);
 
       setting.set(value);
@@ -707,7 +708,7 @@ describe('get', () => {
       'illandril-chat-enhancements',
       'illandril-token-tooltips',
     ] as const)('passes namespace (%s) to game.setting.get', (namespace) => {
-      const settings = new Settings(namespace, localize);
+      const settings = new ModuleSettings(namespace, localize);
       const setting = settings.register('example', Boolean, false);
 
       setting.get();
@@ -722,7 +723,7 @@ describe('get', () => {
       'example',
       'example-boolean',
     ] as const)('passes key (%s) to game.setting.get', (key) => {
-      const settings = new Settings('example-module', localize);
+      const settings = new ModuleSettings('example-module', localize);
       const setting = settings.register(key, Boolean, false);
 
       setting.get();
@@ -739,7 +740,7 @@ describe('get', () => {
     ] as const)('returns the value (%j) from game.setting.set', (mockValue) => {
       getSpy.mockReturnValueOnce(mockValue);
 
-      const settings = new Settings('example-module', localize);
+      const settings = new ModuleSettings('example-module', localize);
       const setting = settings.register('example', Boolean, false);
 
       const value = setting.get();

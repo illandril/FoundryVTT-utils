@@ -1,7 +1,7 @@
-import Module from './Module';
-import Settings from './Settings';
+import Settings from './ModuleSettings';
+import ModuleUtils from './ModuleUtils';
 
-jest.mock('./Settings');
+jest.mock('./ModuleSettings');
 
 describe('settings', () => {
   it.each([
@@ -9,7 +9,7 @@ describe('settings', () => {
     'illandril-chat-enhancements',
     'illandril-token-tooltips',
   ])('passes module id (%s) to Settings', (id) => {
-    const module = new Module({
+    const module = new ModuleUtils({
       id,
       title: 'Example Module',
       version: '1.0.0',

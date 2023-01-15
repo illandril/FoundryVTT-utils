@@ -1,6 +1,6 @@
-import Module from './Module';
+import ModuleUtils from './ModuleUtils';
 
-const module = new Module({
+const module = new ModuleUtils({
   id: 'template-test', title: 'Template Test Module', version: '1.2.3',
 });
 
