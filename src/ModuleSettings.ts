@@ -1,18 +1,20 @@
 type LocalizeFN = (key: string) => string;
 
-type ValueType<N extends string, K extends string> = ClientSettings.Values[`${N}.${K}`];
-
-type TypeArg<N extends string, K extends string> = K extends 'debug' ? typeof Boolean : ClientSettings.TypeConstructor<ValueType<N, K>>;
-
-type SettingOptionsWithDefaults = 'config' | 'scope' | 'requiresReload';
-type DerivedSettingsOptions = 'name' | 'hint' | 'type' | 'default' | 'choices';
-type SettingConfig<N extends string, K extends string> = {
+type RegisterOptions<T> = {
   hasHint?: boolean
-  choices?: ValueType<N, K> extends string ? ValueType<N, K>[] : never
   callOnChangeOnInit?: boolean
-}
-& Partial<Pick<ClientSettings.Config<ValueType<N, K>>, SettingOptionsWithDefaults>>
-& Omit<ClientSettings.Config<ValueType<N, K>>, DerivedSettingsOptions | SettingOptionsWithDefaults>;
+  config?: ClientSettings.Config<T>['config']
+  scope?: ClientSettings.Config<T>['scope']
+  requiresReload?: ClientSettings.Config<T>['requiresReload']
+  onChange?: ClientSettings.Config<T>['onChange']
+  range?: ClientSettings.Config<T>['range']
+  choices?: T extends string ? T[] : never
+};
+
+type RegisterMenuOptions<
+  ObjectType extends object,
+  Options extends FormApplicationOptions,
+> = Omit<ClientSettings.MenuConfig<ObjectType, Options>, 'name' | 'label' | 'hint'>;
 
 export type Setting<T> = {
   get(): T
@@ -41,7 +43,7 @@ export default class Settings<N extends string> {
   registerMenu<
     ObjectType extends object,
     Options extends FormApplicationOptions,
-  >(key: string, data: Omit<ClientSettings.SubmenuConfig<ObjectType, Options>, 'name' | 'label' | 'hint'>) {
+  >(key: string, data: RegisterMenuOptions<ObjectType, Options>) {
     const prefixedData = {
       ...data,
       name: `${this.#namespace}.setting.menu.${key}.name`,
@@ -63,32 +65,42 @@ export default class Settings<N extends string> {
     } as const;
   }
 
-  register<K extends string>(key: K, type: TypeArg<N, K>, defaultValue: ValueType<N, K>, {
-    scope = 'world',
-    hasHint,
-    config = true,
-    requiresReload = false,
-    choices,
-    callOnChangeOnInit,
-    onChange,
-    ...registerOptions
-  }: SettingConfig<N, K> = {}): Setting<ValueType<N, K>> {
+  #mapChoices(key: string, choices: string[] | undefined) {
+    let choiceOptions;
+    if (choices) {
+      choiceOptions = {
+        choices: Object.fromEntries(choices.map((choice) => [
+          choice, this.#localize(`setting.${key}.choice.${choice}`),
+        ])),
+      };
+    }
+    return choiceOptions;
+  }
+
+  register<T>(
+    key: string,
+    type: ClientSettings.TypeConstructor<T>,
+    defaultValue: T,
+    {
+      scope = 'world',
+      hasHint,
+      config = true,
+      requiresReload = false,
+      choices,
+      callOnChangeOnInit,
+      onChange,
+      ...registerOptions
+    }: RegisterOptions<T> = {},
+  ) {
     const setting = {
-      set: (value: ValueType<N, K>) => {
+      set: (value: T) => {
         game.settings.set(this.#namespace, key, value);
       },
-      get: (): ValueType<N, K> => game.settings.get(this.#namespace, key),
+      get: (): T => game.settings.get(this.#namespace, key) as T,
     };
 
     const register = () => {
-      let choiceOptions;
-      if (choices) {
-        choiceOptions = {
-          choices: Object.fromEntries(choices.map((choice) => [
-            choice, this.#localize(`setting.${key}.choice.${choice as string}`),
-          ])),
-        };
-      }
+      const choiceOptions = this.#mapChoices(key, choices);
       game.settings.register(this.#namespace, key, {
         name: this.#localize(`setting.${key}.label`),
         hint: hasHint ? this.#localize(`setting.${key}.hint`) : undefined,
@@ -96,7 +108,7 @@ export default class Settings<N extends string> {
         requiresReload, onChange,
         ...choiceOptions,
         ...registerOptions,
-      } as ClientSettings.Config<ValueType<N, K>>);
+      } as ClientSettings.Config<T>);
 
       if (callOnChangeOnInit) {
         onChange?.(setting.get());

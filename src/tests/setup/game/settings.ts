@@ -18,7 +18,7 @@ game.settings.get = <N extends string, K extends string>(module: N, key: K) => {
   if (!setting) {
     throw new Error(`Not registered: ${module}.${key}`);
   }
-  return setting.value as ClientSettings.Values[`${N}.${K}`];
+  return setting.value;
 };
 
 game.settings.set = (module: string, key: string, value: unknown) => {
