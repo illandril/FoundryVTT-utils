@@ -1,5 +1,5 @@
 let ModuleUtils: typeof import('./ModuleUtils').default;
-let Logger: jest.SpiedClass<typeof import('./Logger').default>;
+let Logger: jest.SpyInstance<import('./Logger').default, ConstructorParameters<typeof import('./Logger').default>>;
 let mockSavedValue: typeof import('./tests/setup/game/settings').mockSavedValue;
 
 beforeEach(async () => {
