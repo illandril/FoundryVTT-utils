@@ -8,7 +8,7 @@ type RegisterOptions<T> = {
   requiresReload?: ClientSettings.Config<T>['requiresReload']
   onChange?: ClientSettings.Config<T>['onChange']
   range?: ClientSettings.Config<T>['range']
-  choices?: (T extends string ? T : never)[]
+  choices?: (T extends string ? T : never)[] | (T extends string ? { [name: string]: string } : never)
 };
 
 type RegisterMenuOptions<
@@ -65,14 +65,18 @@ export default class Settings<N extends string> {
     } as const;
   }
 
-  #mapChoices(key: string, choices: string[] | undefined) {
+  #mapChoices(key: string, choices: string[] | { [name: string]: string } | undefined) {
     let choiceOptions;
     if (choices) {
-      choiceOptions = {
-        choices: Object.fromEntries(choices.map((choice) => [
-          choice, this.#localize(`setting.${key}.choice.${choice}`),
-        ])),
-      };
+      if (Array.isArray(choices)) {
+        choiceOptions = {
+          choices: Object.fromEntries(choices.map((choice) => [
+            choice, this.#localize(`setting.${key}.choice.${choice}`),
+          ])),
+        };
+      } else {
+        choiceOptions = { choices };
+      }
     }
     return choiceOptions;
   }

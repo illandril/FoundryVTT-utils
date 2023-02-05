@@ -542,7 +542,7 @@ describe('register', () => {
         expect(registerSpy.mock.lastCall?.[2]).not.toHaveProperty('choices');
       });
 
-      it('passes choices to game.setting.register', () => {
+      it('converts choices string[] to choices object for game.setting.register', () => {
         localize.mockImplementation((key) => `LOC[${key}]`);
 
         type ChoiceType = 'optionA' | 'optionB' | 'optionC';
@@ -557,6 +557,29 @@ describe('register', () => {
             optionA: 'LOC[setting.example-string.choice.optionA]',
             optionB: 'LOC[setting.example-string.choice.optionB]',
             optionC: 'LOC[setting.example-string.choice.optionC]',
+          },
+        }));
+      });
+
+      it('passes choices to game.setting.register', () => {
+        localize.mockImplementation((key) => `LOC[${key}]`);
+
+        type ChoiceType = 'optionA' | 'optionB' | 'optionC';
+        const settings = new ModuleSettings('example-module', localize);
+        settings.register<ChoiceType>('example-string', String, 'optionA', {
+          choices: {
+            optionA: 'My first option',
+            optionB: 'Second',
+            optionC: 'Final choice',
+          },
+        });
+
+        expect(registerSpy).toBeCalledTimes(1);
+        expect(registerSpy).toBeCalledWith('example-module', 'example-string', expect.objectContaining({
+          choices: {
+            optionA: 'My first option',
+            optionB: 'Second',
+            optionC: 'Final choice',
           },
         }));
       });
