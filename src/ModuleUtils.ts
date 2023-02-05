@@ -43,6 +43,10 @@ export default class ModuleUtils<N extends string> {
     }
   }
 
+  get id() {
+    return this.#id;
+  }
+
   get logger() {
     return this.#logger;
   }

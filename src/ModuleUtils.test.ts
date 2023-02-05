@@ -54,6 +54,21 @@ describe('cssPrefix', () => {
   });
 });
 
+describe('id', () => {
+  it.each([
+    'example-module',
+    'illandril-chat-enhancements',
+    'illandril-token-tooltips',
+  ])('uses module id (%s)', (id) => {
+    const module = new ModuleUtils({
+      id,
+      title: 'Example Module',
+      version: '1.0.0',
+    });
+    expect(module.id).toBe(id);
+  });
+});
+
 describe('localize', () => {
   const localizeSpy = jest.spyOn(game.i18n, 'localize');
   const formatSpy = jest.spyOn(game.i18n, 'format');
