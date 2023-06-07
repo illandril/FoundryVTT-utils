@@ -1,4 +1,5 @@
 import failOnConsole from 'jest-fail-on-console';
+import './setup/foundry';
 import './setup/game';
 import './setup/Hooks';
 import './setup/Templates';
