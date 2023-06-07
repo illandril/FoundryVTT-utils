@@ -16,6 +16,7 @@ export default {
       GRID_MIN_SIZE: 50,
       SORT_INTEGER_DENSITY: 100000,
     },
+    utils: {},
   },
   dnd5e: {
     config: {
