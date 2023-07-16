@@ -3,7 +3,7 @@ type LocalizeFN = (key: string) => string;
 type RegisterOptions<T> = {
   hasHint?: boolean
   callOnChangeOnInit?: boolean
-  config?: ClientSettings.Config<T>['config']
+  config?: boolean | (() => boolean)
   scope?: ClientSettings.Config<T>['scope']
   requiresReload?: ClientSettings.Config<T>['requiresReload']
   onChange?: ClientSettings.Config<T>['onChange']
@@ -108,7 +108,8 @@ export default class Settings<N extends string> {
       game.settings.register(this.#namespace, key, {
         name: this.#localize(`setting.${key}.label`),
         hint: hasHint ? this.#localize(`setting.${key}.hint`) : undefined,
-        scope, config, type, default: defaultValue,
+        config: typeof config === 'function' ? config() : config,
+        scope, type, default: defaultValue,
         requiresReload, onChange,
         ...choiceOptions,
         ...registerOptions,

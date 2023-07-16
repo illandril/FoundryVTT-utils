@@ -453,6 +453,18 @@ describe('register', () => {
           config,
         }));
       });
+
+      it.each([true, false])('calls config function (%j) and passes result to game.setting.register', (configReturn) => {
+        const config = jest.fn(() => configReturn);
+        const settings = new ModuleSettings('example-module', localize);
+        settings.register('example', Boolean, false, { config });
+
+        expect(registerSpy).toBeCalledTimes(1);
+        expect(registerSpy).toBeCalledWith('example-module', 'example', expect.objectContaining({
+          config: configReturn,
+        }));
+        expect(config).toBeCalledTimes(1);
+      });
     });
 
     describe('requiresReload', () => {
