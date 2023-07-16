@@ -11,7 +11,7 @@ describe('IllandrilAuthorInfo', () => {
     expect(IllandrilAuthorInfo.email).toBe('foundry-modules@illandril.net');
   });
   it('has the correct discord', () => {
-    expect(IllandrilAuthorInfo.discord).toBe('joespan#3152');
+    expect(IllandrilAuthorInfo.discord).toBe('joespan');
   });
   it('has the correct ko-fi', () => {
     expect(IllandrilAuthorInfo['ko-fi']).toBe('illandril');
@@ -107,7 +107,7 @@ describe('getStandardFields', () => {
       "name": "Joe Spandrusyszyn (illandril)",
       "url": "https://github.com/illandril",
       "email": "foundry-modules@illandril.net",
-      "discord": "joespan#3152",
+      "discord": "joespan",
       "ko-fi": "illandril",
       "patreon": "illandril",
       "reddit": "u/illandril"

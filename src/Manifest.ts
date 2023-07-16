@@ -13,7 +13,7 @@ export const IllandrilAuthorInfo: Author = {
   name: 'Joe Spandrusyszyn (illandril)',
   url: 'https://github.com/illandril',
   email: 'foundry-modules@illandril.net',
-  discord: 'joespan#3152',
+  discord: 'joespan',
   'ko-fi': 'illandril',
   patreon: 'illandril',
   reddit: 'u/illandril',
