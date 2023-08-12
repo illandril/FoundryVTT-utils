@@ -5,9 +5,28 @@ export default {
       ready: false,
     },
     i18n: {},
-    scenes: {},
+    scenes: {
+      current: {
+        name: 'Mock Scene',
+        grid: {
+          type: 1,
+          size: 140,
+          distance: 5,
+          units: 'ft',
+        },
+        dimensions: {
+          width: 7420,
+          height: 10640,
+          size: 140,
+        },
+      },
+    },
     settings: {},
     userId: 'mock-user-id',
+    user: {
+      name: 'Mock User',
+      isGM: false,
+    },
   },
   ui: {
     notifications: {},
