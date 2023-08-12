@@ -9,6 +9,9 @@ export default {
     settings: {},
     userId: 'mock-user-id',
   },
+  ui: {
+    notifications: {},
+  },
   Hooks: {},
   foundry: {
     CONST: {
