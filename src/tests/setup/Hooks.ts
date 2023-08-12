@@ -3,11 +3,6 @@ type Callback = ((...args: unknown[]) => boolean | undefined | void);
 const hookMap = new Map<string, Callback[]>();
 const hookOnceMap = new Map<string, Callback[]>();
 
-afterEach(() => {
-  hookMap.clear();
-  hookOnceMap.clear();
-});
-
 Hooks.on = (key, fn) => {
   let array = hookMap.get(key);
   if (!array) {
@@ -66,3 +61,21 @@ Hooks.call = (key, ...args) => {
   }
   return true;
 };
+
+declare global {
+  interface SIMULATE {
+    clearHook: (key: string) => void
+    clearAllHooks: () => void
+  }
+}
+
+SIMULATE.clearHook = (key) => {
+  hookMap.delete(key);
+  hookOnceMap.delete(key);
+};
+SIMULATE.clearAllHooks = () => {
+  hookMap.clear();
+  hookOnceMap.clear();
+};
+
+export {};

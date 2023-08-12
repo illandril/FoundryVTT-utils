@@ -1,10 +1,12 @@
 export default {
   vtt: '@illandril/foundryvtt-utils Test',
+  SIMULATE: {},
   game: {
     canvas: {
       ready: false,
     },
     i18n: {},
+    keybindings: {},
     scenes: {
       current: {
         name: 'Mock Scene',
@@ -37,8 +39,20 @@ export default {
       DEFAULT_TOKEN: 'icons/svg/mock-default.svg',
       GRID_MIN_SIZE: 50,
       SORT_INTEGER_DENSITY: 100000,
+      KEYBINDING_PRECEDENCE: {
+        PRIORITY: 0,
+        NORMAL: 1,
+        DEFERRED: 2,
+      },
     },
     utils: {},
+  },
+  KeyboardManager: {
+    MODIFIER_KEYS: {
+      CONTROL: 'Control',
+      SHIFT: 'Shift',
+      ALT: 'Alt',
+    },
   },
   dnd5e: {
     config: {

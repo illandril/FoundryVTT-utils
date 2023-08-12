@@ -1,10 +1,8 @@
 let ModuleUtils: typeof import('./ModuleUtils').default;
 let Logger: jest.SpyInstance<import('./Logger').default, ConstructorParameters<typeof import('./Logger').default>>;
-let mockSavedValue: typeof import('./tests/setup/game/settings').mockSavedValue;
 
 beforeEach(async () => {
   ModuleUtils = (await import('./ModuleUtils')).default;
-  mockSavedValue = (await import('./tests/setup/game/settings')).mockSavedValue;
   const loggerModule = await import('./Logger');
   Logger = jest.spyOn(loggerModule, 'default').mockImplementation(function MockLogger(this: import('./Logger').default) {
     this.info = jest.fn();
@@ -42,7 +40,7 @@ describe('logger', () => {
   });
 
   it('initializes logLevel.debug to false if no saved value', () => {
-    mockSavedValue('example-module', 'debug', undefined);
+    SIMULATE.mockSavedSetting('example-module', 'debug', undefined);
 
     const module = new ModuleUtils({
       id: 'example-module',
@@ -62,7 +60,7 @@ describe('logger', () => {
   });
 
   it.each([true, false])('initializes logLevel.debug with the saved value (%j)', (savedValue) => {
-    mockSavedValue('example-module', 'debug', savedValue);
+    SIMULATE.mockSavedSetting('example-module', 'debug', savedValue);
 
     const module = new ModuleUtils({
       id: 'example-module',

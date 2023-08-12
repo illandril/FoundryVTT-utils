@@ -2,10 +2,6 @@
 const settings = new Map<string, { value: any, onChange?: (value: any) => void }>();
 const savedValues = new Map<string, unknown>();
 
-export const mockSavedValue = (module: string, key: string, value: unknown) => {
-  savedValues.set(`${module}.${key}`, value);
-};
-
 game.settings.register = (module, key, { default: defaultValue, onChange }) => {
   settings.set(`${module}.${key}`, {
     value: savedValues.get(`${module}.${key}`) ?? defaultValue,
@@ -31,3 +27,15 @@ game.settings.set = (module: string, key: string, value: unknown) => {
 };
 
 game.settings.registerMenu = () => undefined;
+
+declare global {
+  interface SIMULATE {
+    mockSavedSetting: (module: string, key: string, value: unknown) => void
+  }
+}
+
+SIMULATE.mockSavedSetting = (module, key, value) => {
+  savedValues.set(`${module}.${key}`, value);
+};
+
+export {};
