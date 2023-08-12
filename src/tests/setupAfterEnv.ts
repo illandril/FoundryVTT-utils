@@ -13,3 +13,10 @@ failOnConsole({
   shouldFailOnWarn: true,
   shouldFailOnLog: true,
 });
+
+declare global {
+  interface SIMULATE {}
+  const SIMULATE: SIMULATE;
+}
+
+export {};
