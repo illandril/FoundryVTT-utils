@@ -54,6 +54,7 @@ export default {
       ALT: 'Alt',
     },
   },
+  ChatMessage: {},
   dnd5e: {
     config: {
       hitDieTypes: ['d4', 'd6', 'd8', 'd10', 'd12'],
