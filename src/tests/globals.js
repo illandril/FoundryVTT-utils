@@ -26,6 +26,7 @@ export default {
     settings: {},
     userId: 'mock-user-id',
     user: {
+      id: 'mock-user-id',
       name: 'Mock User',
       isGM: false,
     },
