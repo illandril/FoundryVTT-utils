@@ -35,7 +35,7 @@
   "homepage": "https://github.com/illandril/FoundryVTT-utils#readme",
   "devDependencies": {
     "@babel/preset-env": "^7.23.2",
-    "@babel/preset-typescript": "^7.23.2",
+    "@babel/preset-typescript": "^7.23.3",
     "@illandril/eslint-config-foundryvtt": "^1.8.7",
     "@illandril/foundryvtt-types": "^6.3.0",
     "@types/jest": "^29.5.7",
