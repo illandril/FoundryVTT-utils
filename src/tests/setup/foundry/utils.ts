@@ -20,3 +20,15 @@
 
   return target;
 };
+
+(foundry.utils as {
+  debounce: typeof foundry.utils.debounce
+}).debounce = <T extends []>(callback: (...args: T) => void, delay: number) => {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  return (...args: T) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      callback(...args);
+    }, delay);
+  };
+};

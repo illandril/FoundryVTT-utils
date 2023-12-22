@@ -1,9 +1,9 @@
-ui.notifications.info = () => {
+window.ui.notifications.info = () => {
   throw new Error('not mocked');
 };
-ui.notifications.warn = () => {
+window.ui.notifications.warn = () => {
   throw new Error('not mocked');
 };
-ui.notifications.error = () => {
+window.ui.notifications.error = () => {
   throw new Error('not mocked');
 };

@@ -33,6 +33,7 @@ export default {
   },
   ui: {
     notifications: {},
+    hotbar: {},
   },
   Hooks: {},
   foundry: {
@@ -73,6 +74,10 @@ export default {
         PRIORITY: 0,
         NORMAL: 1,
         DEFERRED: 2,
+      },
+      MACRO_TYPES: {
+        SCRIPT: 'script',
+        CHAT: 'chat',
       },
       SORT_INTEGER_DENSITY: 100000,
       TOKEN_DISPOSITIONS: {
