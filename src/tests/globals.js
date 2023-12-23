@@ -1,12 +1,15 @@
 export default {
   vtt: '@illandril/foundryvtt-utils Test',
   SIMULATE: {},
+  CONFIG: {},
   game: {
     canvas: {
       ready: false,
     },
     i18n: {},
     keybindings: {},
+    actors: {},
+    modules: {},
     scenes: {
       current: {
         name: 'Mock Scene',
