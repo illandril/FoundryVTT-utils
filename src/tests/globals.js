@@ -5,10 +5,15 @@ export default {
   game: {
     canvas: {
       ready: false,
+      tokens: {
+        placeables: [],
+      },
     },
     i18n: {},
     keybindings: {},
-    actors: {},
+    actors: {
+      tokens: {},
+    },
     modules: {},
     scenes: {
       current: {
