@@ -51,7 +51,7 @@ describe.each(methods)('%s', (testedMethodName) => {
   ] as (string | object)[][][])('passes the data to console (%j)', (data) => {
     const logger = new Logger('Example Module', logLevel);
     logger[testedMethodName](...data);
-    expect(targetConsoleSpy).toBeCalledWith(`%cExample Module`,
+    expect(targetConsoleSpy).toHaveBeenCalledWith(`%cExample Module`,
       expect.stringContaining('background-color'), ...data);
   });
 
@@ -60,45 +60,45 @@ describe.each(methods)('%s', (testedMethodName) => {
 
     logger[testedMethodName]('Message');
 
-    expect(targetConsoleSpy).toBeCalledTimes(1);
+    expect(targetConsoleSpy).toHaveBeenCalledTimes(1);
 
     logLevel.debug = false;
     logger[testedMethodName]('Message');
 
     if (testedMethodName === 'debug') {
-      expect(targetConsoleSpy).toBeCalledTimes(1);
+      expect(targetConsoleSpy).toHaveBeenCalledTimes(1);
     } else {
-      expect(targetConsoleSpy).toBeCalledTimes(2);
+      expect(targetConsoleSpy).toHaveBeenCalledTimes(2);
     }
 
     logLevel.debug = true;
     logger[testedMethodName]('Message');
 
     if (testedMethodName === 'debug') {
-      expect(targetConsoleSpy).toBeCalledTimes(2);
+      expect(targetConsoleSpy).toHaveBeenCalledTimes(2);
     } else {
-      expect(targetConsoleSpy).toBeCalledTimes(3);
+      expect(targetConsoleSpy).toHaveBeenCalledTimes(3);
     }
   });
 
   it.each(testModuleNames)('outputs module name (%s)', (moduleName) => {
     const logger = new Logger(moduleName, logLevel);
     logger[testedMethodName]('Message');
-    expect(targetConsoleSpy).toBeCalledWith(`%c${moduleName}`,
+    expect(targetConsoleSpy).toHaveBeenCalledWith(`%c${moduleName}`,
       expect.stringContaining('background-color'), 'Message');
   });
 
   it.each(testColors)('styles the name (%s)', (color) => {
     const logger = new Logger('Example Module', logLevel, color);
     logger[testedMethodName]('Message');
-    expect(targetConsoleSpy).toBeCalledWith('%cExample Module',
+    expect(targetConsoleSpy).toHaveBeenCalledWith('%cExample Module',
       `background-color: ${color}; color: #fff; padding: 0.1em 0.5em;`, 'Message');
   });
 
   it('defaults color to #4f0104', () => {
     const logger = new Logger('Example Module', logLevel);
     logger[testedMethodName]('Message');
-    expect(targetConsoleSpy).toBeCalledWith('%cExample Module',
+    expect(targetConsoleSpy).toHaveBeenCalledWith('%cExample Module',
       `background-color: #4f0104; color: #fff; padding: 0.1em 0.5em;`, 'Message');
   });
 });
@@ -121,7 +121,7 @@ describe('child', () => {
         });
       }
       childLogger[testedMethodName]('Message');
-      expect(targetConsoleSpy).toBeCalledWith(`%cExample Module - Child`,
+      expect(targetConsoleSpy).toHaveBeenCalledWith(`%cExample Module - Child`,
         'background-color: rebeccapurple; color: #fff; padding: 0.1em 0.5em;', 'Message');
     });
   });
@@ -143,24 +143,24 @@ describe('child', () => {
 
       childLogger[testedMethodName]('Message');
 
-      expect(targetConsoleSpy).toBeCalledTimes(1);
+      expect(targetConsoleSpy).toHaveBeenCalledTimes(1);
 
       logLevel.debug = false;
       childLogger[testedMethodName]('Message');
 
       if (testedMethodName === 'debug') {
-        expect(targetConsoleSpy).toBeCalledTimes(1);
+        expect(targetConsoleSpy).toHaveBeenCalledTimes(1);
       } else {
-        expect(targetConsoleSpy).toBeCalledTimes(2);
+        expect(targetConsoleSpy).toHaveBeenCalledTimes(2);
       }
 
       logLevel.debug = true;
       childLogger[testedMethodName]('Message');
 
       if (testedMethodName === 'debug') {
-        expect(targetConsoleSpy).toBeCalledTimes(2);
+        expect(targetConsoleSpy).toHaveBeenCalledTimes(2);
       } else {
-        expect(targetConsoleSpy).toBeCalledTimes(3);
+        expect(targetConsoleSpy).toHaveBeenCalledTimes(3);
       }
     });
   });
@@ -180,7 +180,7 @@ describe('child', () => {
         });
       }
       childLogger[testedMethodName]('Message');
-      expect(targetConsoleSpy).toBeCalledWith(`%cExample Module - Child`,
+      expect(targetConsoleSpy).toHaveBeenCalledWith(`%cExample Module - Child`,
         `background-color: ${testColor}; color: #fff; padding: 0.1em 0.5em;`, 'Message');
     });
   });
@@ -200,7 +200,7 @@ describe('child', () => {
         });
       }
       childLogger[testedMethodName]('Message');
-      expect(targetConsoleSpy).toBeCalledWith(`%cExample Module - ${name}`,
+      expect(targetConsoleSpy).toHaveBeenCalledWith(`%cExample Module - ${name}`,
         expect.stringContaining('background-color'), 'Message');
     });
   });

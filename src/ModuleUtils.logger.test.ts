@@ -23,8 +23,8 @@ describe('logger', () => {
     const module = new ModuleUtils({ id: 'example-module', title, version });
     const logger = module.logger;
 
-    expect(Logger).toBeCalledTimes(1);
-    expect(Logger).toBeCalledWith(`${title} v${version}`, { debug: false }, undefined);
+    expect(Logger).toHaveBeenCalledTimes(1);
+    expect(Logger).toHaveBeenCalledWith(`${title} v${version}`, { debug: false }, undefined);
     expect(logger).toBeInstanceOf(Logger);
   });
 
@@ -36,7 +36,7 @@ describe('logger', () => {
     });
 
     const logger = module.logger;
-    expect(logger.info).toBeCalledWith('Started');
+    expect(logger.info).toHaveBeenCalledWith('Started');
   });
 
   it('initializes logLevel.debug to false if no saved value', () => {
@@ -117,7 +117,7 @@ describe('logger', () => {
     });
 
     const logger = module.logger;
-    expect(logger.info).toBeCalledWith(`Started. To report bugs, go to: ${bugsURL}`);
+    expect(logger.info).toHaveBeenCalledWith(`Started. To report bugs, go to: ${bugsURL}`);
   });
 
   it.each([
@@ -133,8 +133,8 @@ describe('logger', () => {
     });
     const logger = module.logger;
 
-    expect(Logger).toBeCalledTimes(1);
-    expect(Logger).toBeCalledWith('Example Module v1.0.0', { debug: false }, color);
+    expect(Logger).toHaveBeenCalledTimes(1);
+    expect(Logger).toHaveBeenCalledWith('Example Module v1.0.0', { debug: false }, color);
     expect(logger).toBeInstanceOf(Logger);
   });
 });

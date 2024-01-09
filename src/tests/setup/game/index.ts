@@ -4,3 +4,4 @@ import './keybindings';
 import './modules';
 import './scenes';
 import './settings';
+import './socket';

@@ -1,6 +1,7 @@
 import CSSPrefix from './CSSPrefix';
 import Logger from './Logger';
 import ModuleSettings from './ModuleSettings';
+import ModuleSocket from './ModuleSocket';
 import Template from './Template';
 
 interface ModuleOptions<N extends string> {
@@ -16,6 +17,7 @@ export default class ModuleUtils<N extends string> {
   readonly #logger: Logger;
   readonly #settings: ModuleSettings<N>;
   #cssPrefix?: CSSPrefix;
+  #socketInitialized = false;
 
   constructor({ id, title, version, bugs, color }: ModuleOptions<N>) {
     const localize = this.localize.bind(this);
@@ -77,5 +79,13 @@ export default class ModuleUtils<N extends string> {
 
   registerTemplate<T extends object>(fileName: `${string}.html`) {
     return new Template<T>(this.#id, fileName);
+  }
+
+  initializeSocket<T extends object>() {
+    if (this.#socketInitialized) {
+      throw new Error('Socket should only be initialized once (to ensure the same generic type is used for all socket messages sent by this module, since they will all use the same message key)');
+    }
+    this.#socketInitialized = true;
+    return new ModuleSocket<T>(this.#id);
   }
 }

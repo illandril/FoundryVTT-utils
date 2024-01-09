@@ -16,8 +16,8 @@ describe('settings', () => {
     });
     const settings = module.settings;
 
-    expect(Settings).toBeCalledTimes(1);
-    expect(Settings).toBeCalledWith(id, module.localize);
+    expect(Settings).toHaveBeenCalledTimes(1);
+    expect(Settings).toHaveBeenCalledWith(id, module.localize);
     expect(settings).toBeInstanceOf(Settings);
   });
 });

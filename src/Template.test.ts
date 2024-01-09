@@ -9,12 +9,12 @@ it('should call getTemplate on init', () => {
 
   module.registerTemplate('testTemplate.html');
 
-  expect(getTemplateSpy).not.toBeCalled();
+  expect(getTemplateSpy).not.toHaveBeenCalled();
 
   Hooks.callAll('init');
 
-  expect(getTemplateSpy).toBeCalledTimes(1);
-  expect(getTemplateSpy).toBeCalledWith('modules/template-test/templates/testTemplate.html');
+  expect(getTemplateSpy).toHaveBeenCalledTimes(1);
+  expect(getTemplateSpy).toHaveBeenCalledWith('modules/template-test/templates/testTemplate.html');
 });
 
 it('should call renderTempalte on render', async () => {
@@ -25,10 +25,10 @@ it('should call renderTempalte on render', async () => {
     example: 'value',
   };
 
-  expect(renderTemplateSpy).not.toBeCalled();
+  expect(renderTemplateSpy).not.toHaveBeenCalled();
 
   await template.render(data);
 
-  expect(renderTemplateSpy).toBeCalledTimes(1);
-  expect(renderTemplateSpy).toBeCalledWith('modules/template-test/templates/testTemplate.html', data);
+  expect(renderTemplateSpy).toHaveBeenCalledTimes(1);
+  expect(renderTemplateSpy).toHaveBeenCalledWith('modules/template-test/templates/testTemplate.html', data);
 });

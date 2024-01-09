@@ -16,6 +16,14 @@ type RegisterMenuOptions<
   Options extends FormApplicationOptions,
 > = Omit<ClientSettings.MenuConfig<ObjectType, Options>, 'name' | 'label' | 'hint'>;
 
+type RegisterKeybindingOptions = {
+  hasHint?: boolean
+  defaultKeybindings?: ClientKeybindings.KeybindingActionBinding[]
+  repeat?: boolean
+  restricted?: boolean
+  precedence?: number
+};
+
 export type Setting<T> = {
   get(): T
   set(value: T): void
@@ -129,5 +137,34 @@ export default class Settings<N extends string> {
       }
     }
     return setting;
+  }
+
+  registerKeybinding(
+    key: string,
+    onDown: () => void,
+    onUp: () => void,
+    {
+      hasHint,
+      defaultKeybindings,
+      precedence = foundry.CONST.KEYBINDING_PRECEDENCE.NORMAL,
+      ...registerOptions
+    }: RegisterKeybindingOptions = {},
+  ) {
+    const register = () => {
+      game.keybindings.register(this.#namespace, key, {
+        name: this.#localize(`hotkey.${key}.label`),
+        hint: hasHint ? this.#localize(`hotkey.${key}.hint`) : undefined,
+        editable: defaultKeybindings ?? [],
+        onDown,
+        onUp,
+        precedence,
+        ...registerOptions,
+      });
+    };
+    if (canRegister) {
+      register();
+    } else {
+      pendingRegistrations.push(register);
+    }
   }
 }

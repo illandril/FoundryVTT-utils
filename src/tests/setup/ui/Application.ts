@@ -52,6 +52,10 @@ class MockApplication {
   render(): ReturnType<Application['render']> {
     throw new Error('not mocked');
   }
+
+  close(): ReturnType<Application['close']> {
+    throw new Error('not mocked');
+  }
 }
 
 window.Application = MockApplication as typeof Application;
