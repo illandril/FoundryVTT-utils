@@ -1,5 +1,9 @@
 type LocalizeFN = (key: string) => string;
 
+type ChoicesObject = { [name: string]: string };
+type ChoicesArray = readonly string[] | string[];
+type Choices = ChoicesArray | ChoicesObject;
+
 type RegisterOptions<T> = {
   hasHint?: boolean
   callOnChangeOnInit?: boolean
@@ -8,7 +12,7 @@ type RegisterOptions<T> = {
   requiresReload?: ClientSettings.Config<T>['requiresReload']
   onChange?: ClientSettings.Config<T>['onChange']
   range?: ClientSettings.Config<T>['range']
-  choices?: (T extends string ? T : never)[] | (T extends string ? { [name: string]: string } : never)
+  choices?: (T extends string ? Choices : never)
 };
 
 type RegisterMenuOptions<
@@ -28,6 +32,9 @@ export type Setting<T> = {
   get(): T
   set(value: T): void
 };
+
+// Workaround for readonly array typing issue: https://github.com/microsoft/TypeScript/issues/17002
+const isChoicesArray = Array.isArray as (obj: Choices | undefined) => obj is ChoicesArray;
 
 let canRegister = false;
 const pendingRegistrations: (() => void)[] = [];
@@ -73,10 +80,10 @@ export default class Settings<N extends string> {
     } as const;
   }
 
-  #mapChoices(key: string, choices: string[] | { [name: string]: string } | undefined) {
+  #mapChoices(key: string, choices: Choices | undefined) {
     let choiceOptions;
     if (choices) {
-      if (Array.isArray(choices)) {
+      if (isChoicesArray(choices)) {
         choiceOptions = {
           choices: Object.fromEntries(choices.map((choice) => [
             choice, this.#localize(`setting.${key}.choice.${choice}`),
