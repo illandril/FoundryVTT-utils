@@ -1,6 +1,6 @@
 {
   "name": "@illandril/foundryvtt-utils",
-  "version": "9.2.1",
+  "version": "9.3.0",
   "description": "Common utilities used by illandril's FoundryVTT modules",
   "main": "dist/index.js",
   "type": "module",
