@@ -573,7 +573,7 @@ describe('register', () => {
         }));
       });
 
-      it('passes choices to game.setting.register', () => {
+      it('passes Record<string, string> choices to game.setting.register unaltered', () => {
         localize.mockImplementation((key) => `LOC[${key}]`);
 
         type ChoiceType = 'optionA' | 'optionB' | 'optionC';
@@ -594,6 +594,36 @@ describe('register', () => {
             optionC: 'Final choice',
           },
         }));
+      });
+
+      it('converts Record<string, function> to choices object to game.setting.register', () => {
+        localize.mockImplementation((key) => `LOC[${key}]`);
+
+        type ChoiceType = 'optionA' | 'optionB' | 'optionC';
+        const settings = new ModuleSettings('example-module', localize);
+        const optionA = jest.fn().mockReturnValue('My first option');
+        const optionB = jest.fn().mockReturnValue('Second');
+        const optionC = jest.fn().mockReturnValue('Final choice');
+        settings.register<ChoiceType>('example-string', String, 'optionA', {
+          choices: {
+            optionA,
+            optionB,
+            optionC,
+          },
+        });
+
+        expect(registerSpy).toHaveBeenCalledTimes(1);
+        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example-string', expect.objectContaining({
+          choices: {
+            optionA: 'My first option',
+            optionB: 'Second',
+            optionC: 'Final choice',
+          },
+        }));
+
+        expect(optionA).toHaveBeenCalledTimes(1);
+        expect(optionB).toHaveBeenCalledTimes(1);
+        expect(optionC).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -680,6 +710,42 @@ describe('register', () => {
       type: Boolean,
       default: false,
     }));
+  });
+
+  it('calls choices functions after init', () => {
+    localize.mockImplementation((key) => `LOC[${key}]`);
+
+    type ChoiceType = 'optionA' | 'optionB' | 'optionC';
+    const settings = new ModuleSettings('example-module', localize);
+    const optionA = jest.fn().mockReturnValue('My first option');
+    const optionB = jest.fn().mockReturnValue('Second');
+    const optionC = jest.fn().mockReturnValue('Final choice');
+    settings.register<ChoiceType>('example-string', String, 'optionA', {
+      choices: {
+        optionA,
+        optionB,
+        optionC,
+      },
+    });
+
+    expect(optionA).toHaveBeenCalledTimes(0);
+    expect(optionB).toHaveBeenCalledTimes(0);
+    expect(optionC).toHaveBeenCalledTimes(0);
+
+    Hooks.callAll('init');
+
+    expect(registerSpy).toHaveBeenCalledTimes(1);
+    expect(registerSpy).toHaveBeenCalledWith('example-module', 'example-string', expect.objectContaining({
+      choices: {
+        optionA: 'My first option',
+        optionB: 'Second',
+        optionC: 'Final choice',
+      },
+    }));
+
+    expect(optionA).toHaveBeenCalledTimes(1);
+    expect(optionB).toHaveBeenCalledTimes(1);
+    expect(optionC).toHaveBeenCalledTimes(1);
   });
 });
 

@@ -1,8 +1,8 @@
 type LocalizeFN = (key: string) => string;
 
-type ChoicesObject = { [name: string]: string };
-type ChoicesArray = readonly string[] | string[];
-type Choices = ChoicesArray | ChoicesObject;
+type ChoicesObject<T> = Record<T extends string ? T : never, string | (() => string)>;
+type ChoicesArray<T> = readonly (T extends string ? T : never)[] | (T extends string ? T : never)[];
+type Choices<T> = ChoicesArray<T> | ChoicesObject<T>;
 
 type RegisterOptions<T> = {
   hasHint?: boolean
@@ -12,7 +12,7 @@ type RegisterOptions<T> = {
   requiresReload?: ClientSettings.Config<T>['requiresReload']
   onChange?: ClientSettings.Config<T>['onChange']
   range?: ClientSettings.Config<T>['range']
-  choices?: (T extends string ? Choices : never)
+  choices?: Choices<T>
 };
 
 type RegisterMenuOptions<
@@ -34,7 +34,7 @@ export type Setting<T> = {
 };
 
 // Workaround for readonly array typing issue: https://github.com/microsoft/TypeScript/issues/17002
-const isChoicesArray = Array.isArray as (obj: Choices | undefined) => obj is ChoicesArray;
+const isChoicesArray = Array.isArray as <T extends string>(obj: Choices<T> | undefined) => obj is ChoicesArray<T>;
 
 let canRegister = false;
 const pendingRegistrations: (() => void)[] = [];
@@ -80,8 +80,8 @@ export default class Settings<N extends string> {
     } as const;
   }
 
-  #mapChoices(key: string, choices: Choices | undefined) {
-    let choiceOptions;
+  #mapChoices<T extends string>(key: string, choices: Choices<T> | undefined) {
+    let choiceOptions: { choices: Record<string, string> } | undefined;
     if (choices) {
       if (isChoicesArray(choices)) {
         choiceOptions = {
@@ -90,7 +90,12 @@ export default class Settings<N extends string> {
           ])),
         };
       } else {
-        choiceOptions = { choices };
+        choiceOptions = {
+          choices: Object.fromEntries(Object.entries<string | (() => string)>(choices).map((entry) => [
+            entry[0],
+            typeof entry[1] === 'function' ? entry[1]() : entry[1],
+          ])),
+        };
       }
     }
     return choiceOptions;
