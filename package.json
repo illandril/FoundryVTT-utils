@@ -45,6 +45,6 @@
     "jest-fail-on-console": "^3.1.2",
     "npm-run-all2": "^6.1.1",
     "shx": "^0.3.4",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.3"
   }
 }
