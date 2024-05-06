@@ -5,32 +5,32 @@ type ChoicesArray<T> = readonly (T extends string ? T : never)[] | (T extends st
 type Choices<T> = ChoicesArray<T> | ChoicesObject<T>;
 
 type RegisterOptions<T> = {
-  hasHint?: boolean
-  callOnChangeOnInit?: boolean
-  config?: boolean | (() => boolean)
-  scope?: ClientSettings.Config<T>['scope']
-  requiresReload?: ClientSettings.Config<T>['requiresReload']
-  onChange?: ClientSettings.Config<T>['onChange']
-  range?: ClientSettings.Config<T>['range']
-  choices?: Choices<T>
+  hasHint?: boolean;
+  callOnChangeOnInit?: boolean;
+  config?: boolean | (() => boolean);
+  scope?: ClientSettings.Config<T>['scope'];
+  requiresReload?: ClientSettings.Config<T>['requiresReload'];
+  onChange?: ClientSettings.Config<T>['onChange'];
+  range?: ClientSettings.Config<T>['range'];
+  choices?: Choices<T>;
 };
 
-type RegisterMenuOptions<
-  ObjectType extends object,
-  Options extends FormApplicationOptions,
-> = Omit<ClientSettings.MenuConfig<ObjectType, Options>, 'name' | 'label' | 'hint'>;
+type RegisterMenuOptions<ObjectType extends object, Options extends FormApplicationOptions> = Omit<
+  ClientSettings.MenuConfig<ObjectType, Options>,
+  'name' | 'label' | 'hint'
+>;
 
 type RegisterKeybindingOptions = {
-  hasHint?: boolean
-  defaultKeybindings?: ClientKeybindings.KeybindingActionBinding[]
-  repeat?: boolean
-  restricted?: boolean
-  precedence?: number
+  hasHint?: boolean;
+  defaultKeybindings?: ClientKeybindings.KeybindingActionBinding[];
+  repeat?: boolean;
+  restricted?: boolean;
+  precedence?: number;
 };
 
 export type Setting<T> = {
-  get(): T
-  set(value: T): void
+  get(): T;
+  set(value: T): void;
 };
 
 // Workaround for readonly array typing issue: https://github.com/microsoft/TypeScript/issues/17002
@@ -38,15 +38,17 @@ const isChoicesArray = Array.isArray as <T extends string>(obj: Choices<T> | und
 
 let canRegister = false;
 const pendingRegistrations: (() => void)[] = [];
-let pendingDebugRegistration: (() => void);
+let pendingDebugRegistration: () => void;
 
 Hooks.once('init', () => {
   canRegister = true;
-  pendingRegistrations.forEach((registration) => registration());
+  for (const registration of pendingRegistrations) {
+    registration();
+  }
   pendingDebugRegistration?.();
 });
 
-export default class Settings<N extends string> {
+export default class ModuleSettings<N extends string> {
   readonly #namespace: N;
   readonly #localize: LocalizeFN;
 
@@ -55,10 +57,10 @@ export default class Settings<N extends string> {
     this.#localize = localize;
   }
 
-  registerMenu<
-    ObjectType extends object,
-    Options extends FormApplicationOptions,
-  >(key: string, data: RegisterMenuOptions<ObjectType, Options>) {
+  registerMenu<ObjectType extends object, Options extends FormApplicationOptions>(
+    key: string,
+    data: RegisterMenuOptions<ObjectType, Options>,
+  ) {
     const prefixedData = {
       ...data,
       name: `${this.#namespace}.setting.menu.${key}.name`,
@@ -85,16 +87,18 @@ export default class Settings<N extends string> {
     if (choices) {
       if (isChoicesArray(choices)) {
         choiceOptions = {
-          choices: Object.fromEntries(choices.map((choice) => [
-            choice, this.#localize(`setting.${key}.choice.${choice}`),
-          ])),
+          choices: Object.fromEntries(
+            choices.map((choice) => [choice, this.#localize(`setting.${key}.choice.${choice}`)]),
+          ),
         };
       } else {
         choiceOptions = {
-          choices: Object.fromEntries(Object.entries<string | (() => string)>(choices).map((entry) => [
-            entry[0],
-            typeof entry[1] === 'function' ? entry[1]() : entry[1],
-          ])),
+          choices: Object.fromEntries(
+            Object.entries<string | (() => string)>(choices).map((entry) => [
+              entry[0],
+              typeof entry[1] === 'function' ? entry[1]() : entry[1],
+            ]),
+          ),
         };
       }
     }
@@ -129,8 +133,11 @@ export default class Settings<N extends string> {
         name: this.#localize(`setting.${key}.label`),
         hint: hasHint ? this.#localize(`setting.${key}.hint`) : undefined,
         config: typeof config === 'function' ? config() : config,
-        scope, type, default: defaultValue,
-        requiresReload, onChange,
+        scope,
+        type,
+        default: defaultValue,
+        requiresReload,
+        onChange,
         ...choiceOptions,
         ...registerOptions,
       } as ClientSettings.Config<T>);
@@ -141,12 +148,10 @@ export default class Settings<N extends string> {
     };
     if (canRegister) {
       register();
+    } else if (key === 'debug') {
+      pendingDebugRegistration = register;
     } else {
-      if (key === 'debug') {
-        pendingDebugRegistration = register;
-      } else {
-        pendingRegistrations.push(register);
-      }
+      pendingRegistrations.push(register);
     }
     return setting;
   }

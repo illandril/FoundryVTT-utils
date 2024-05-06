@@ -1,14 +1,7 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": [
-    "src/tests",
-    "src/**/*.test.ts",
-    "src/**/*.test.types.d.ts"
-  ],
+  "exclude": ["src/tests", "src/**/*.test.ts", "src/**/*.test.types.d.ts"],
   "compilerOptions": {
-    "types": [
-      "jquery",
-      "@illandril/foundryvtt-types"
-    ]
+    "types": ["jquery", "@illandril/foundryvtt-types"]
   }
 }

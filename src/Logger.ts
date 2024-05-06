@@ -1,5 +1,5 @@
 type LogLevel = {
-  readonly debug: boolean
+  readonly debug: boolean;
 };
 
 export default class Logger {
@@ -23,23 +23,23 @@ export default class Logger {
 
   debug(...data: unknown[]) {
     if (this.#logLevel.debug) {
-      // eslint-disable-next-line no-console
+      // biome-ignore lint/nursery/noConsole: console calls via Logger is allowed
       console.debug(this.#logPrefix, this.#logStyle, ...data);
     }
   }
 
   info(...data: unknown[]) {
-    // eslint-disable-next-line no-console
+    // biome-ignore lint/nursery/noConsole: console calls via Logger is allowed
     console.info(this.#logPrefix, this.#logStyle, ...data);
   }
 
   warn(...data: unknown[]) {
-    // eslint-disable-next-line no-console
+    // biome-ignore lint/nursery/noConsole: console calls via Logger is allowed
     console.warn(this.#logPrefix, this.#logStyle, ...data);
   }
 
   error(...data: unknown[]) {
-    // eslint-disable-next-line no-console
+    // biome-ignore lint/nursery/noConsole: console calls via Logger is allowed
     console.error(this.#logPrefix, this.#logStyle, ...data);
   }
 }

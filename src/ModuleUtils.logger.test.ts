@@ -4,7 +4,9 @@ let Logger: jest.SpyInstance<import('./Logger').default, ConstructorParameters<t
 beforeEach(async () => {
   ModuleUtils = (await import('./ModuleUtils')).default;
   const loggerModule = await import('./Logger');
-  Logger = jest.spyOn(loggerModule, 'default').mockImplementation(function MockLogger(this: import('./Logger').default) {
+  Logger = jest.spyOn(loggerModule, 'default').mockImplementation(function MockLogger(
+    this: import('./Logger').default,
+  ) {
     this.info = jest.fn();
     return this;
   });
@@ -17,8 +19,8 @@ describe('logger', () => {
     ['Example Module', '1.0.0'],
     ['Example Module', '1.2.3'],
     ['Example Module', '3.0.1'],
-    ['Illandril\'s Chat Enhancements', '1.0.0'],
-    ['Illandril\'s Token Tooltips', '1.0.0'],
+    ["Illandril's Chat Enhancements", '1.0.0'],
+    ["Illandril's Token Tooltips", '1.0.0'],
   ])('passes module title and version (%s, %s) to Logger', (title, version) => {
     const module = new ModuleUtils({ id: 'example-module', title, version });
     const logger = module.logger;
@@ -105,26 +107,22 @@ describe('logger', () => {
     expect(logLevel?.debug).toBe(true);
   });
 
-  it.each([
-    'https://www.example.com',
-    'https://github.com/illandril/FoundryVTT-chat-enhancements/issues',
-  ])('logs "Started" with the provided bugs URL (%s)', (bugsURL) => {
-    const module = new ModuleUtils({
-      id: 'example-module',
-      title: 'Example Module',
-      version: '1.0.0',
-      bugs: bugsURL,
-    });
+  it.each(['https://www.example.com', 'https://github.com/illandril/FoundryVTT-chat-enhancements/issues'])(
+    'logs "Started" with the provided bugs URL (%s)',
+    (bugsURL) => {
+      const module = new ModuleUtils({
+        id: 'example-module',
+        title: 'Example Module',
+        version: '1.0.0',
+        bugs: bugsURL,
+      });
 
-    const logger = module.logger;
-    expect(logger.info).toHaveBeenCalledWith(`Started. To report bugs, go to: ${bugsURL}`);
-  });
+      const logger = module.logger;
+      expect(logger.info).toHaveBeenCalledWith(`Started. To report bugs, go to: ${bugsURL}`);
+    },
+  );
 
-  it.each([
-    '#000',
-    '#4f0104',
-    'rebeccapurple',
-  ])('passes color (%s) to Logger', (color) => {
+  it.each(['#000', '#4f0104', 'rebeccapurple'])('passes color (%s) to Logger', (color) => {
     const module = new ModuleUtils({
       id: 'example-module',
       title: 'Example Module',

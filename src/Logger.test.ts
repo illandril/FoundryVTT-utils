@@ -1,24 +1,10 @@
 import Logger from './Logger';
 
-const methods = [
-  'debug',
-  'info',
-  'warn',
-  'error',
-] as const;
+const methods = ['debug', 'info', 'warn', 'error'] as const;
 
-const testModuleNames = [
-  'Example Module',
-  "Illandril's Chat Enhancements",
-  "Illandril's Token Toolitps",
-] as const;
+const testModuleNames = ['Example Module', "Illandril's Chat Enhancements", "Illandril's Token Toolitps"] as const;
 
-const testColors = [
-  '#000',
-  '#4f0104',
-  'rebeccapurple',
-  'rgb(90,0,0)',
-];
+const testColors = ['#000', '#4f0104', 'rebeccapurple', 'rgb(90,0,0)'];
 
 const logLevel = {
   debug: true,
@@ -51,8 +37,11 @@ describe.each(methods)('%s', (testedMethodName) => {
   ] as (string | object)[][][])('passes the data to console (%j)', (data) => {
     const logger = new Logger('Example Module', logLevel);
     logger[testedMethodName](...data);
-    expect(targetConsoleSpy).toHaveBeenCalledWith(`%cExample Module`,
-      expect.stringContaining('background-color'), ...data);
+    expect(targetConsoleSpy).toHaveBeenCalledWith(
+      '%cExample Module',
+      expect.stringContaining('background-color'),
+      ...data,
+    );
   });
 
   it('respects logLevel.debug', () => {
@@ -84,22 +73,31 @@ describe.each(methods)('%s', (testedMethodName) => {
   it.each(testModuleNames)('outputs module name (%s)', (moduleName) => {
     const logger = new Logger(moduleName, logLevel);
     logger[testedMethodName]('Message');
-    expect(targetConsoleSpy).toHaveBeenCalledWith(`%c${moduleName}`,
-      expect.stringContaining('background-color'), 'Message');
+    expect(targetConsoleSpy).toHaveBeenCalledWith(
+      `%c${moduleName}`,
+      expect.stringContaining('background-color'),
+      'Message',
+    );
   });
 
   it.each(testColors)('styles the name (%s)', (color) => {
     const logger = new Logger('Example Module', logLevel, color);
     logger[testedMethodName]('Message');
-    expect(targetConsoleSpy).toHaveBeenCalledWith('%cExample Module',
-      `background-color: ${color}; color: #fff; padding: 0.1em 0.5em;`, 'Message');
+    expect(targetConsoleSpy).toHaveBeenCalledWith(
+      '%cExample Module',
+      `background-color: ${color}; color: #fff; padding: 0.1em 0.5em;`,
+      'Message',
+    );
   });
 
   it('defaults color to #4f0104', () => {
     const logger = new Logger('Example Module', logLevel);
     logger[testedMethodName]('Message');
-    expect(targetConsoleSpy).toHaveBeenCalledWith('%cExample Module',
-      `background-color: #4f0104; color: #fff; padding: 0.1em 0.5em;`, 'Message');
+    expect(targetConsoleSpy).toHaveBeenCalledWith(
+      '%cExample Module',
+      'background-color: #4f0104; color: #fff; padding: 0.1em 0.5em;',
+      'Message',
+    );
   });
 });
 
@@ -121,8 +119,11 @@ describe('child', () => {
         });
       }
       childLogger[testedMethodName]('Message');
-      expect(targetConsoleSpy).toHaveBeenCalledWith(`%cExample Module - Child`,
-        'background-color: rebeccapurple; color: #fff; padding: 0.1em 0.5em;', 'Message');
+      expect(targetConsoleSpy).toHaveBeenCalledWith(
+        '%cExample Module - Child',
+        'background-color: rebeccapurple; color: #fff; padding: 0.1em 0.5em;',
+        'Message',
+      );
     });
   });
 
@@ -180,8 +181,11 @@ describe('child', () => {
         });
       }
       childLogger[testedMethodName]('Message');
-      expect(targetConsoleSpy).toHaveBeenCalledWith(`%cExample Module - Child`,
-        `background-color: ${testColor}; color: #fff; padding: 0.1em 0.5em;`, 'Message');
+      expect(targetConsoleSpy).toHaveBeenCalledWith(
+        '%cExample Module - Child',
+        `background-color: ${testColor}; color: #fff; padding: 0.1em 0.5em;`,
+        'Message',
+      );
     });
   });
 
@@ -200,8 +204,11 @@ describe('child', () => {
         });
       }
       childLogger[testedMethodName]('Message');
-      expect(targetConsoleSpy).toHaveBeenCalledWith(`%cExample Module - ${name}`,
-        expect.stringContaining('background-color'), 'Message');
+      expect(targetConsoleSpy).toHaveBeenCalledWith(
+        `%cExample Module - ${name}`,
+        expect.stringContaining('background-color'),
+        'Message',
+      );
     });
   });
 });

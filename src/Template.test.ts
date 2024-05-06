@@ -1,7 +1,9 @@
 import ModuleUtils from './ModuleUtils';
 
 const module = new ModuleUtils({
-  id: 'template-test', title: 'Template Test Module', version: '1.2.3',
+  id: 'template-test',
+  title: 'Template Test Module',
+  version: '1.2.3',
 });
 
 it('should call getTemplate on init', () => {

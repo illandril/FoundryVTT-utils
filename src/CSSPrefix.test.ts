@@ -1,7 +1,8 @@
 import CSSPrefix from './CSSPrefix';
 
 describe('validation', () => {
-  const expectedErrorMessage = 'CSS prefixes must be at least two characters, start and end with a letter or "_", and contain only letters, numbers, "_", or "-"';
+  const expectedErrorMessage =
+    'CSS prefixes must be at least two characters, start and end with a letter or "_", and contain only letters, numbers, "_", or "-"';
 
   const validStartingCharacters: Readonly<string[]> = [...'abcdefghijklmnopqrstuvwxyz_'];
   const validEndingCharacters: Readonly<string[]> = [...validStartingCharacters, ...'0123456789'];
@@ -9,7 +10,6 @@ describe('validation', () => {
   const invalidMiddleCharacters: Readonly<string[]> = [...'~`!@#$%^&*()+={}[]|\\:;"\',.<>/?'];
   const invalidEndingCharacters: Readonly<string[]> = [...invalidMiddleCharacters, ...'-'];
   const invalidStartingCharacters: Readonly<string[]> = [...invalidEndingCharacters, ...'0123456789'];
-
 
   describe('constructor', () => {
     it.each(validStartingCharacters)('throws if prefix is too short (%s)', (character) => {
@@ -209,7 +209,6 @@ describe('example-module', () => {
     describe('group1', () => {
       const group1 = examplePrefix.childPrefix('group1');
 
-
       describe('.child', () => {
         it('returns the correct value for "child1"', () => {
           const value = group1.child('child1');
@@ -224,7 +223,6 @@ describe('example-module', () => {
 
     describe('group-two', () => {
       const group2 = examplePrefix.childPrefix('group-two');
-
 
       describe('.child', () => {
         it('returns the correct value for "child1"', () => {
@@ -315,4 +313,3 @@ describe('illandril-token-tootlips', () => {
     });
   });
 });
-

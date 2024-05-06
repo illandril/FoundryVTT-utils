@@ -8,7 +8,7 @@ class MockFormApplication extends Application<FormApplicationOptions> {
 
   static get defaultOptions() {
     return {
-      ...super.defaultOptions,
+      ...Application.defaultOptions,
       classes: ['form'],
       closeOnSubmit: true,
       editable: true,
@@ -34,7 +34,7 @@ class MockFormApplication extends Application<FormApplicationOptions> {
     // Nothing to mock
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
+  // biome-ignore lint/suspicious/useAwait: The actual implementation of FormApplication requires async
   async _updateObject() {
     throw new Error('A subclass of the FormApplication must implement the _updateObject method.');
   }

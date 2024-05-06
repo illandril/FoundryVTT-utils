@@ -2,11 +2,11 @@ import { toInt } from './index';
 
 it.each([
   // Non-numeric input
-  [undefined, NaN],
-  [null, NaN],
-  [NaN, NaN],
-  ['', NaN],
-  ['no', NaN],
+  [undefined, Number.NaN],
+  [null, Number.NaN],
+  [Number.NaN, Number.NaN],
+  ['', Number.NaN],
+  ['no', Number.NaN],
 
   // Positive integers
   [1, 1],
@@ -44,7 +44,7 @@ it.each([
   [2.9, 2],
   ['2.9', 2],
 
-  // Negative decimals rounded down
+  // Negative decimals rounded up
   [-2.9, -2],
   ['-2.9', -2],
   [-2.1, -2],

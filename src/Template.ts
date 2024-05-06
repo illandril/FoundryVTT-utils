@@ -11,6 +11,6 @@ export default class Template<T extends object> {
   }
 
   async render(data: T) {
-    return renderTemplate(this.#path, data);
+    return await renderTemplate(this.#path, data);
   }
 }

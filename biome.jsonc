@@ -1,0 +1,7 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["@illandril/biome-config", "@illandril/foundryvtt-types/biome"],
+  "linter": {
+    "ignore": ["src/tests/globals.js"]
+  }
+}

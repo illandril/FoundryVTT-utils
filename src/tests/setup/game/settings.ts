@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const settings = new Map<string, { value: any, onChange?: (value: any) => void }>();
+const settings = new Map<string, { value: any; onChange?: (value: any) => void }>();
 const savedValues = new Map<string, unknown>();
 
 game.settings.register = (module, key, { default: defaultValue, onChange }) => {
@@ -29,8 +28,8 @@ game.settings.set = (module: string, key: string, value: unknown) => {
 game.settings.registerMenu = () => undefined;
 
 declare global {
-  interface SIMULATE {
-    mockSavedSetting: (module: string, key: string, value: unknown) => void
+  interface Simulate {
+    mockSavedSetting: (module: string, key: string, value: unknown) => void;
   }
 }
 
@@ -38,4 +37,4 @@ SIMULATE.mockSavedSetting = (module, key, value) => {
   savedValues.set(`${module}.${key}`, value);
 };
 
-export {};
+export type {};

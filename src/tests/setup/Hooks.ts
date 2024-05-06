@@ -1,4 +1,5 @@
-type Callback = ((...args: unknown[]) => boolean | undefined | void);
+// biome-ignore lint/suspicious/noConfusingVoidType: There are two types of Hooks - hooks that can stop an event (return boolean) and ones that don't (void)
+type Callback = (...args: unknown[]) => boolean | undefined | void;
 
 const hookMap = new Map<string, Callback[]>();
 const hookOnceMap = new Map<string, Callback[]>();
@@ -38,7 +39,6 @@ Hooks.callAll = (key, ...args) => {
   return true;
 };
 
-
 Hooks.call = (key, ...args) => {
   let callbacks = hookMap.get(key);
   if (callbacks) {
@@ -63,9 +63,9 @@ Hooks.call = (key, ...args) => {
 };
 
 declare global {
-  interface SIMULATE {
-    clearHook: (key: string) => void
-    clearAllHooks: () => void
+  interface Simulate {
+    clearHook: (key: string) => void;
+    clearAllHooks: () => void;
   }
 }
 
@@ -78,4 +78,4 @@ SIMULATE.clearAllHooks = () => {
   hookOnceMap.clear();
 };
 
-export {};
+export type {};

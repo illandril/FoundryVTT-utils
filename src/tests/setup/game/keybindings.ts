@@ -6,9 +6,9 @@ game.keybindings.register = (module, key, data) => {
 game.keybindings.get = (module, key) => keybindingMap.get(`${module}.${key}`)?.editable ?? [];
 
 declare global {
-  interface SIMULATE {
-    keyDown: (module: string, key: string) => void
-    keyUp: (module: string, key: string) => void
+  interface Simulate {
+    keyDown: (module: string, key: string) => void;
+    keyUp: (module: string, key: string) => void;
   }
 }
 
@@ -22,4 +22,4 @@ SIMULATE.keyUp = (module, key) => {
 
 KeyboardManager.getKeycodeDisplayString = () => 'mock-keycode-display-string';
 
-export {};
+export type {};

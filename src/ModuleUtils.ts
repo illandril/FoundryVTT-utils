@@ -5,11 +5,11 @@ import ModuleSocket from './ModuleSocket';
 import Template from './Template';
 
 interface ModuleOptions<N extends string> {
-  id: N
-  title: string
-  version: string
-  bugs?: string
-  color?: string
+  id: N;
+  title: string;
+  version: string;
+  bugs?: string;
+  color?: string;
 }
 
 export default class ModuleUtils<N extends string> {
@@ -83,7 +83,9 @@ export default class ModuleUtils<N extends string> {
 
   initializeSocket<T extends object>() {
     if (this.#socketInitialized) {
-      throw new Error('Socket should only be initialized once (to ensure the same generic type is used for all socket messages sent by this module, since they will all use the same message key)');
+      throw new Error(
+        'Socket should only be initialized once (to ensure the same generic type is used for all socket messages sent by this module, since they will all use the same message key)',
+      );
     }
     this.#socketInitialized = true;
     return new ModuleSocket<T>(this.#id);

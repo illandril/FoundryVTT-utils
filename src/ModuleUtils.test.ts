@@ -38,37 +38,35 @@ describe('cssPrefix', () => {
     expect(prefix).toBe(prefix2);
   });
 
-  it.each([
-    'example-module',
-    'illandril-chat-enhancements',
-    'illandril-token-tooltips',
-  ])('passes module id (%s) to CSSPrefix', (id) => {
-    const module = new ModuleUtils({
-      id,
-      title: 'Example Module',
-      version: '1.0.0',
-    });
-    const prefix = module.cssPrefix;
+  it.each(['example-module', 'illandril-chat-enhancements', 'illandril-token-tooltips'])(
+    'passes module id (%s) to CSSPrefix',
+    (id) => {
+      const module = new ModuleUtils({
+        id,
+        title: 'Example Module',
+        version: '1.0.0',
+      });
+      const prefix = module.cssPrefix;
 
-    expect(CSSPrefix).toHaveBeenCalledTimes(1);
-    expect(CSSPrefix).toHaveBeenCalledWith(id);
-    expect(prefix).toBeInstanceOf(CSSPrefix);
-  });
+      expect(CSSPrefix).toHaveBeenCalledTimes(1);
+      expect(CSSPrefix).toHaveBeenCalledWith(id);
+      expect(prefix).toBeInstanceOf(CSSPrefix);
+    },
+  );
 });
 
 describe('id', () => {
-  it.each([
-    'example-module',
-    'illandril-chat-enhancements',
-    'illandril-token-tooltips',
-  ])('uses module id (%s)', (id) => {
-    const module = new ModuleUtils({
-      id,
-      title: 'Example Module',
-      version: '1.0.0',
-    });
-    expect(module.id).toBe(id);
-  });
+  it.each(['example-module', 'illandril-chat-enhancements', 'illandril-token-tooltips'])(
+    'uses module id (%s)',
+    (id) => {
+      const module = new ModuleUtils({
+        id,
+        title: 'Example Module',
+        version: '1.0.0',
+      });
+      expect(module.id).toBe(id);
+    },
+  );
 });
 
 describe('localize', () => {
@@ -167,20 +165,19 @@ describe('initializeSocket()', () => {
     expect(ModuleSocket).toHaveBeenCalledTimes(1);
   });
 
-  it.each([
-    'example-module',
-    'illandril-chat-enhancements',
-    'illandril-token-tooltips',
-  ])('passes module id (%s) to ModuleSocket', (id) => {
-    const module = new ModuleUtils({
-      id,
-      title: 'Example Module',
-      version: '1.0.0',
-    });
-    const socket = module.initializeSocket();
+  it.each(['example-module', 'illandril-chat-enhancements', 'illandril-token-tooltips'])(
+    'passes module id (%s) to ModuleSocket',
+    (id) => {
+      const module = new ModuleUtils({
+        id,
+        title: 'Example Module',
+        version: '1.0.0',
+      });
+      const socket = module.initializeSocket();
 
-    expect(ModuleSocket).toHaveBeenCalledTimes(1);
-    expect(ModuleSocket).toHaveBeenCalledWith(id);
-    expect(socket).toBeInstanceOf(ModuleSocket);
-  });
+      expect(ModuleSocket).toHaveBeenCalledTimes(1);
+      expect(ModuleSocket).toHaveBeenCalledWith(id);
+      expect(socket).toBeInstanceOf(ModuleSocket);
+    },
+  );
 });

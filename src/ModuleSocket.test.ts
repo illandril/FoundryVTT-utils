@@ -45,17 +45,17 @@ describe('emit', () => {
     expect(emit).toHaveBeenCalledTimes(2);
   });
 
-  it.each([
-    'example-module',
-    'illandril-grid-labels',
-  ])('passes the correct key ("module.%s") to game.socket.emit', (id) => {
-    const socket = new ModuleSocket(id);
+  it.each(['example-module', 'illandril-grid-labels'])(
+    'passes the correct key ("module.%s") to game.socket.emit',
+    (id) => {
+      const socket = new ModuleSocket(id);
 
-    socket.emit({});
+      socket.emit({});
 
-    expect(emit).toHaveBeenCalledWith(`module.${id}`, {});
-    expect(emit).toHaveBeenCalledTimes(1);
-  });
+      expect(emit).toHaveBeenCalledWith(`module.${id}`, {});
+      expect(emit).toHaveBeenCalledTimes(1);
+    },
+  );
 
   it.each([
     {},
@@ -80,7 +80,7 @@ describe('emit', () => {
 
     socket.emit(data);
 
-    expect(emit).toHaveBeenCalledWith(`module.example-module`, data);
+    expect(emit).toHaveBeenCalledWith('module.example-module', data);
   });
 });
 
@@ -105,24 +105,23 @@ describe('on', () => {
     expect(on).toHaveBeenCalledTimes(2);
   });
 
-  it.each([
-    'example-module',
-    'illandril-grid-labels',
-  ])('passes the correct key ("module.%s") to game.socket.on', (id) => {
-    const socket = new ModuleSocket(id);
+  it.each(['example-module', 'illandril-grid-labels'])(
+    'passes the correct key ("module.%s") to game.socket.on',
+    (id) => {
+      const socket = new ModuleSocket(id);
 
-    const callback = () => {
-      // noop
-    };
-    socket.on(callback);
+      const callback = () => {
+        // noop
+      };
+      socket.on(callback);
 
-    expect(on).toHaveBeenCalledWith(`module.${id}`, callback);
-    expect(on).toHaveBeenCalledTimes(1);
-  });
+      expect(on).toHaveBeenCalledWith(`module.${id}`, callback);
+      expect(on).toHaveBeenCalledTimes(1);
+    },
+  );
 
   it('passes the provided callback to game.socket.on', () => {
     const socket = new ModuleSocket('example-module');
-
 
     const callback1 = () => {
       // noop
@@ -136,13 +135,13 @@ describe('on', () => {
     socket.on(callback1);
 
     expect(on).toHaveBeenCalledTimes(1);
-    expect(on).toHaveBeenCalledWith(`module.example-module`, callback1);
-    expect(on).not.toHaveBeenCalledWith(`module.example-module`, callback2);
+    expect(on).toHaveBeenCalledWith('module.example-module', callback1);
+    expect(on).not.toHaveBeenCalledWith('module.example-module', callback2);
 
     socket.on(callback2);
 
     expect(on).toHaveBeenCalledTimes(2);
-    expect(on).toHaveBeenCalledWith(`module.example-module`, callback2);
+    expect(on).toHaveBeenCalledWith('module.example-module', callback2);
   });
 
   it('SIMULATE.socketEmit triggers the correct callback(s)', () => {

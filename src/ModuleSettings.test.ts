@@ -2,25 +2,24 @@ const localize = jest.fn<string, [string]>();
 
 let ModuleSettings: typeof import('./ModuleSettings').default;
 
-beforeEach(() => import('./ModuleSettings').then((module) => {
-  ModuleSettings = module.default;
-  jest.resetModules();
-  localize.mockImplementation((key: string) => key.endsWith('.label') ? 'Mock Label' : 'Mock Hint');
-}));
-
+beforeEach(() =>
+  import('./ModuleSettings').then((module) => {
+    ModuleSettings = module.default;
+    jest.resetModules();
+    localize.mockImplementation((key: string) => (key.endsWith('.label') ? 'Mock Label' : 'Mock Hint'));
+  }),
+);
 
 describe('registerMenu', () => {
   const registerMenuSpy = jest.spyOn(game.settings, 'registerMenu');
 
   type MyMenuOptions = { myOption: boolean } & FormApplicationOptions;
-  class MyMenu extends FormApplication<never, MyMenuOptions> {
-    constructor(object?: never, options?: MyMenuOptions) {
-      super(object, options);
-    }
 
+  // biome-ignore lint/complexity/noStaticOnlyClass: A real form would have more functions defined, but this isn't a real form
+  class MyMenu extends FormApplication<never, MyMenuOptions> {
     static get defaultOptions() {
       return {
-        ...super.defaultOptions,
+        ...FormApplication.defaultOptions,
         myOption: true,
       };
     }
@@ -37,78 +36,86 @@ describe('registerMenu', () => {
       Hooks.callAll('init');
     });
 
-    describe.each([
-      'example-module',
-      'illandril-chat-enhancements',
-      'illandril-token-tooltips',
-    ] as const)('namespace: %s', (namespace) => {
-      it('passes namespace to game.setting.registerMenu', () => {
-        const settings = new ModuleSettings(namespace, localize);
-        settings.registerMenu('example', testMenuConfig);
+    describe.each(['example-module', 'illandril-chat-enhancements', 'illandril-token-tooltips'] as const)(
+      'namespace: %s',
+      (namespace) => {
+        it('passes namespace to game.setting.registerMenu', () => {
+          const settings = new ModuleSettings(namespace, localize);
+          settings.registerMenu('example', testMenuConfig);
 
-        expect(registerMenuSpy).toHaveBeenCalledTimes(1);
-        expect(registerMenuSpy).toHaveBeenCalledWith(namespace, 'example', expect.any(Object));
-      });
+          expect(registerMenuSpy).toHaveBeenCalledTimes(1);
+          expect(registerMenuSpy).toHaveBeenCalledWith(namespace, 'example', expect.any(Object));
+        });
 
-      it('uses namespace to prefix name', () => {
-        const settings = new ModuleSettings(namespace, localize);
-        settings.registerMenu('example', testMenuConfig);
+        it('uses namespace to prefix name', () => {
+          const settings = new ModuleSettings(namespace, localize);
+          settings.registerMenu('example', testMenuConfig);
 
-        expect(registerMenuSpy).toHaveBeenCalledTimes(1);
-        expect(registerMenuSpy).toHaveBeenCalledWith(namespace, 'example', expect.objectContaining({
-          name: `${namespace}.setting.menu.example.name`,
-        }));
-      });
+          expect(registerMenuSpy).toHaveBeenCalledTimes(1);
+          expect(registerMenuSpy).toHaveBeenCalledWith(
+            namespace,
+            'example',
+            expect.objectContaining({
+              name: `${namespace}.setting.menu.example.name`,
+            }),
+          );
+        });
 
-      it('uses namespace to prefix label', () => {
-        const settings = new ModuleSettings(namespace, localize);
-        settings.registerMenu('example', testMenuConfig);
+        it('uses namespace to prefix label', () => {
+          const settings = new ModuleSettings(namespace, localize);
+          settings.registerMenu('example', testMenuConfig);
 
-        expect(registerMenuSpy).toHaveBeenCalledTimes(1);
-        expect(registerMenuSpy).toHaveBeenCalledWith(namespace, 'example', expect.objectContaining({
-          label: `${namespace}.setting.menu.example.label`,
-        }));
-      });
+          expect(registerMenuSpy).toHaveBeenCalledTimes(1);
+          expect(registerMenuSpy).toHaveBeenCalledWith(
+            namespace,
+            'example',
+            expect.objectContaining({
+              label: `${namespace}.setting.menu.example.label`,
+            }),
+          );
+        });
 
-      it('uses namespace to prefix hint', () => {
-        const settings = new ModuleSettings(namespace, localize);
-        settings.registerMenu('example', testMenuConfig);
+        it('uses namespace to prefix hint', () => {
+          const settings = new ModuleSettings(namespace, localize);
+          settings.registerMenu('example', testMenuConfig);
 
-        expect(registerMenuSpy).toHaveBeenCalledTimes(1);
-        expect(registerMenuSpy).toHaveBeenCalledWith(namespace, 'example', expect.objectContaining({
-          hint: `${namespace}.setting.menu.example.hint`,
-        }));
-      });
+          expect(registerMenuSpy).toHaveBeenCalledTimes(1);
+          expect(registerMenuSpy).toHaveBeenCalledWith(
+            namespace,
+            'example',
+            expect.objectContaining({
+              hint: `${namespace}.setting.menu.example.hint`,
+            }),
+          );
+        });
 
-      it('uses namespace to prefix FormApplication ID', () => {
-        const settings = new ModuleSettings(namespace, localize);
+        it('uses namespace to prefix FormApplication ID', () => {
+          const settings = new ModuleSettings(namespace, localize);
 
-        const formApplicationOptions = settings.registerMenu('example', testMenuConfig);
+          const formApplicationOptions = settings.registerMenu('example', testMenuConfig);
 
-        expect(formApplicationOptions).toHaveProperty('id', `${namespace}--menu--example`);
-      });
+          expect(formApplicationOptions).toHaveProperty('id', `${namespace}--menu--example`);
+        });
 
-      it('uses namespace to prefix FormApplication title', () => {
-        const settings = new ModuleSettings(namespace, localize);
+        it('uses namespace to prefix FormApplication title', () => {
+          const settings = new ModuleSettings(namespace, localize);
 
-        const formApplicationOptions = settings.registerMenu('example', testMenuConfig);
+          const formApplicationOptions = settings.registerMenu('example', testMenuConfig);
 
-        expect(formApplicationOptions).toHaveProperty('title', `${namespace}.setting.menu.example.title`);
-      });
+          expect(formApplicationOptions).toHaveProperty('title', `${namespace}.setting.menu.example.title`);
+        });
 
-      it('uses namespace in FormApplication template', () => {
-        const settings = new ModuleSettings(namespace, localize);
+        it('uses namespace in FormApplication template', () => {
+          const settings = new ModuleSettings(namespace, localize);
 
-        const formApplicationOptions = settings.registerMenu('example', testMenuConfig);
+          const formApplicationOptions = settings.registerMenu('example', testMenuConfig);
 
-        expect(formApplicationOptions).toHaveProperty('template', `modules/${namespace}/templates/menu-example.html`);
-      });
-    });
+          expect(formApplicationOptions).toHaveProperty('template', `modules/${namespace}/templates/menu-example.html`);
+        });
+      },
+    );
 
-    describe.each([
-      'example',
-      'sample',
-    ] as const)('key: %s', (key) => {
+    describe.each(['example', 'sample'] as const)('key: %s', (key) => {
       it('passes key to game.setting.registerMenu', () => {
         const settings = new ModuleSettings('example-module', localize);
         settings.registerMenu(key, testMenuConfig);
@@ -122,9 +129,13 @@ describe('registerMenu', () => {
         settings.registerMenu(key, testMenuConfig);
 
         expect(registerMenuSpy).toHaveBeenCalledTimes(1);
-        expect(registerMenuSpy).toHaveBeenCalledWith('example-module', key, expect.objectContaining({
-          name: `example-module.setting.menu.${key}.name`,
-        }));
+        expect(registerMenuSpy).toHaveBeenCalledWith(
+          'example-module',
+          key,
+          expect.objectContaining({
+            name: `example-module.setting.menu.${key}.name`,
+          }),
+        );
       });
 
       it('uses key in label', () => {
@@ -132,9 +143,13 @@ describe('registerMenu', () => {
         settings.registerMenu(key, testMenuConfig);
 
         expect(registerMenuSpy).toHaveBeenCalledTimes(1);
-        expect(registerMenuSpy).toHaveBeenCalledWith('example-module', key, expect.objectContaining({
-          label: `example-module.setting.menu.${key}.label`,
-        }));
+        expect(registerMenuSpy).toHaveBeenCalledWith(
+          'example-module',
+          key,
+          expect.objectContaining({
+            label: `example-module.setting.menu.${key}.label`,
+          }),
+        );
       });
 
       it('uses key in hint', () => {
@@ -142,9 +157,13 @@ describe('registerMenu', () => {
         settings.registerMenu(key, testMenuConfig);
 
         expect(registerMenuSpy).toHaveBeenCalledTimes(1);
-        expect(registerMenuSpy).toHaveBeenCalledWith('example-module', key, expect.objectContaining({
-          hint: `example-module.setting.menu.${key}.hint`,
-        }));
+        expect(registerMenuSpy).toHaveBeenCalledWith(
+          'example-module',
+          key,
+          expect.objectContaining({
+            hint: `example-module.setting.menu.${key}.hint`,
+          }),
+        );
       });
 
       it('uses key in FormApplication ID', () => {
@@ -172,10 +191,7 @@ describe('registerMenu', () => {
       });
     });
 
-    it.each([
-      'fas fa-bars',
-      'my-icon',
-    ])('passes icon (%s) to game.setting.registerMenu', (icon) => {
+    it.each(['fas fa-bars', 'my-icon'])('passes icon (%s) to game.setting.registerMenu', (icon) => {
       const settings = new ModuleSettings('example-module', localize);
       settings.registerMenu('example', {
         ...testMenuConfig,
@@ -183,9 +199,13 @@ describe('registerMenu', () => {
       });
 
       expect(registerMenuSpy).toHaveBeenCalledTimes(1);
-      expect(registerMenuSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-        icon,
-      }));
+      expect(registerMenuSpy).toHaveBeenCalledWith(
+        'example-module',
+        'example',
+        expect.objectContaining({
+          icon,
+        }),
+      );
     });
 
     it('passes type to game.setting.registerMenu', () => {
@@ -193,9 +213,13 @@ describe('registerMenu', () => {
       settings.registerMenu('example', testMenuConfig);
 
       expect(registerMenuSpy).toHaveBeenCalledTimes(1);
-      expect(registerMenuSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-        type: MyMenu,
-      }));
+      expect(registerMenuSpy).toHaveBeenCalledWith(
+        'example-module',
+        'example',
+        expect.objectContaining({
+          type: MyMenu,
+        }),
+      );
     });
 
     it.each([true, false])('passes restricted (%j) to game.setting.registerMenu', (restricted) => {
@@ -206,9 +230,13 @@ describe('registerMenu', () => {
       });
 
       expect(registerMenuSpy).toHaveBeenCalledTimes(1);
-      expect(registerMenuSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-        restricted,
-      }));
+      expect(registerMenuSpy).toHaveBeenCalledWith(
+        'example-module',
+        'example',
+        expect.objectContaining({
+          restricted,
+        }),
+      );
     });
   });
 
@@ -222,11 +250,15 @@ describe('registerMenu', () => {
     Hooks.callAll('init');
 
     expect(registerMenuSpy).toHaveBeenCalledTimes(1);
-    expect(registerMenuSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-      name: 'example-module.setting.menu.example.name',
-      label: 'example-module.setting.menu.example.label',
-      hint: 'example-module.setting.menu.example.hint',
-    }));
+    expect(registerMenuSpy).toHaveBeenCalledWith(
+      'example-module',
+      'example',
+      expect.objectContaining({
+        name: 'example-module.setting.menu.example.name',
+        label: 'example-module.setting.menu.example.label',
+        hint: 'example-module.setting.menu.example.hint',
+      }),
+    );
   });
 
   it('registers all settings regisetered before init after init hook', () => {
@@ -240,16 +272,24 @@ describe('registerMenu', () => {
     Hooks.callAll('init');
 
     expect(registerMenuSpy).toHaveBeenCalledTimes(2);
-    expect(registerMenuSpy).toHaveBeenCalledWith('example-module', 'example1', expect.objectContaining({
-      name: 'example-module.setting.menu.example1.name',
-      label: 'example-module.setting.menu.example1.label',
-      hint: 'example-module.setting.menu.example1.hint',
-    }));
-    expect(registerMenuSpy).toHaveBeenCalledWith('example-module', 'example2', expect.objectContaining({
-      name: 'example-module.setting.menu.example2.name',
-      label: 'example-module.setting.menu.example2.label',
-      hint: 'example-module.setting.menu.example2.hint',
-    }));
+    expect(registerMenuSpy).toHaveBeenCalledWith(
+      'example-module',
+      'example1',
+      expect.objectContaining({
+        name: 'example-module.setting.menu.example1.name',
+        label: 'example-module.setting.menu.example1.label',
+        hint: 'example-module.setting.menu.example1.hint',
+      }),
+    );
+    expect(registerMenuSpy).toHaveBeenCalledWith(
+      'example-module',
+      'example2',
+      expect.objectContaining({
+        name: 'example-module.setting.menu.example2.name',
+        label: 'example-module.setting.menu.example2.label',
+        hint: 'example-module.setting.menu.example2.hint',
+      }),
+    );
   });
 
   it('does not double register if init hook triggers twice', () => {
@@ -263,11 +303,15 @@ describe('registerMenu', () => {
     Hooks.callAll('init');
 
     expect(registerMenuSpy).toHaveBeenCalledTimes(1);
-    expect(registerMenuSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-      name: 'example-module.setting.menu.example.name',
-      label: 'example-module.setting.menu.example.label',
-      hint: 'example-module.setting.menu.example.hint',
-    }));
+    expect(registerMenuSpy).toHaveBeenCalledWith(
+      'example-module',
+      'example',
+      expect.objectContaining({
+        name: 'example-module.setting.menu.example.name',
+        label: 'example-module.setting.menu.example.label',
+        hint: 'example-module.setting.menu.example.hint',
+      }),
+    );
   });
 });
 
@@ -280,36 +324,38 @@ describe('register', () => {
     });
 
     describe('namespace', () => {
-      it.each([
-        'example-module',
-        'illandril-chat-enhancements',
-        'illandril-token-tooltips',
-      ] as const)('passes namespace (%s) to game.setting.register', (namespace) => {
-        const settings = new ModuleSettings(namespace, localize);
-        settings.register('example', Boolean, false);
+      it.each(['example-module', 'illandril-chat-enhancements', 'illandril-token-tooltips'] as const)(
+        'passes namespace (%s) to game.setting.register',
+        (namespace) => {
+          const settings = new ModuleSettings(namespace, localize);
+          settings.register('example', Boolean, false);
 
-        expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith(namespace, 'example', expect.any(Object));
-      });
+          expect(registerSpy).toHaveBeenCalledTimes(1);
+          expect(registerSpy).toHaveBeenCalledWith(namespace, 'example', expect.any(Object));
+        },
+      );
     });
 
     describe('key', () => {
-      it.each([
-        'example',
-        'example-boolean',
-        'debug',
-      ] as const)('passes key (%s) to game.setting.register and localize', (key) => {
-        const settings = new ModuleSettings('example-module', localize);
-        settings.register(key, Boolean, false);
+      it.each(['example', 'example-boolean', 'debug'] as const)(
+        'passes key (%s) to game.setting.register and localize',
+        (key) => {
+          const settings = new ModuleSettings('example-module', localize);
+          settings.register(key, Boolean, false);
 
-        expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', key, expect.objectContaining({
-          name: 'Mock Label',
-        }));
+          expect(registerSpy).toHaveBeenCalledTimes(1);
+          expect(registerSpy).toHaveBeenCalledWith(
+            'example-module',
+            key,
+            expect.objectContaining({
+              name: 'Mock Label',
+            }),
+          );
 
-        expect(localize).toHaveBeenCalledTimes(1);
-        expect(localize).toHaveBeenCalledWith(`setting.${key}.label`);
-      });
+          expect(localize).toHaveBeenCalledTimes(1);
+          expect(localize).toHaveBeenCalledWith(`setting.${key}.label`);
+        },
+      );
     });
 
     describe('type', () => {
@@ -318,9 +364,13 @@ describe('register', () => {
         settings.register('example-boolean', Boolean, false);
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example-boolean', expect.objectContaining({
-          type: Boolean,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example-boolean',
+          expect.objectContaining({
+            type: Boolean,
+          }),
+        );
       });
 
       it('passes correct type for number settings', () => {
@@ -328,9 +378,13 @@ describe('register', () => {
         settings.register('example-number', Number, 0);
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example-number', expect.objectContaining({
-          type: Number,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example-number',
+          expect.objectContaining({
+            type: Number,
+          }),
+        );
       });
 
       it('passes correct type for string settings', () => {
@@ -338,9 +392,13 @@ describe('register', () => {
         settings.register('example-string', String, '');
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example-string', expect.objectContaining({
-          type: String,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example-string',
+          expect.objectContaining({
+            type: String,
+          }),
+        );
       });
 
       it('passes correct type for object settings', () => {
@@ -348,9 +406,13 @@ describe('register', () => {
         settings.register('example-object', Object, {});
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example-object', expect.objectContaining({
-          type: Object,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example-object',
+          expect.objectContaining({
+            type: Object,
+          }),
+        );
       });
     });
 
@@ -360,9 +422,13 @@ describe('register', () => {
         settings.register('example-number', Number, defaultValue);
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example-number', expect.objectContaining({
-          default: defaultValue,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example-number',
+          expect.objectContaining({
+            default: defaultValue,
+          }),
+        );
       });
     });
 
@@ -376,10 +442,14 @@ describe('register', () => {
         expect(localize).toHaveBeenCalledWith('setting.example.hint');
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-          name: 'Mock Label',
-          hint: 'Mock Hint',
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example',
+          expect.objectContaining({
+            name: 'Mock Label',
+            hint: 'Mock Hint',
+          }),
+        );
       });
 
       it('does not include a hint if hasHint is false', () => {
@@ -390,10 +460,14 @@ describe('register', () => {
         expect(localize).toHaveBeenCalledWith('setting.example.label');
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-          name: 'Mock Label',
-          hint: undefined,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example',
+          expect.objectContaining({
+            name: 'Mock Label',
+            hint: undefined,
+          }),
+        );
       });
 
       it('does not include a hint if hasHint not specified', () => {
@@ -404,10 +478,14 @@ describe('register', () => {
         expect(localize).toHaveBeenCalledWith('setting.example.label');
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-          name: 'Mock Label',
-          hint: undefined,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example',
+          expect.objectContaining({
+            name: 'Mock Label',
+            hint: undefined,
+          }),
+        );
       });
     });
 
@@ -417,9 +495,13 @@ describe('register', () => {
         settings.register('example', Boolean, false, {});
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-          scope: 'world',
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example',
+          expect.objectContaining({
+            scope: 'world',
+          }),
+        );
       });
 
       it.each(['client', 'world'] as const)('passes scope (%s) to game.setting.register', (scope) => {
@@ -427,9 +509,13 @@ describe('register', () => {
         settings.register('example', Boolean, false, { scope });
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-          scope,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example',
+          expect.objectContaining({
+            scope,
+          }),
+        );
       });
     });
 
@@ -439,9 +525,13 @@ describe('register', () => {
         settings.register('example', Boolean, false, {});
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-          config: true,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example',
+          expect.objectContaining({
+            config: true,
+          }),
+        );
       });
 
       it.each([true, false])('passes config (%j) to game.setting.register', (config) => {
@@ -449,22 +539,33 @@ describe('register', () => {
         settings.register('example', Boolean, false, { config });
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-          config,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example',
+          expect.objectContaining({
+            config,
+          }),
+        );
       });
 
-      it.each([true, false])('calls config function (%j) and passes result to game.setting.register', (configReturn) => {
-        const config = jest.fn(() => configReturn);
-        const settings = new ModuleSettings('example-module', localize);
-        settings.register('example', Boolean, false, { config });
+      it.each([true, false])(
+        'calls config function (%j) and passes result to game.setting.register',
+        (configReturn) => {
+          const config = jest.fn(() => configReturn);
+          const settings = new ModuleSettings('example-module', localize);
+          settings.register('example', Boolean, false, { config });
 
-        expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-          config: configReturn,
-        }));
-        expect(config).toHaveBeenCalledTimes(1);
-      });
+          expect(registerSpy).toHaveBeenCalledTimes(1);
+          expect(registerSpy).toHaveBeenCalledWith(
+            'example-module',
+            'example',
+            expect.objectContaining({
+              config: configReturn,
+            }),
+          );
+          expect(config).toHaveBeenCalledTimes(1);
+        },
+      );
     });
 
     describe('requiresReload', () => {
@@ -473,9 +574,13 @@ describe('register', () => {
         settings.register('example', Boolean, false, {});
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-          requiresReload: false,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example',
+          expect.objectContaining({
+            requiresReload: false,
+          }),
+        );
       });
 
       it.each([true, false])('passes requiresReload (%j) to game.setting.register', (requiresReload) => {
@@ -483,9 +588,13 @@ describe('register', () => {
         settings.register('example', Boolean, false, { requiresReload });
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-          requiresReload,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example',
+          expect.objectContaining({
+            requiresReload,
+          }),
+        );
       });
     });
 
@@ -505,43 +614,61 @@ describe('register', () => {
         settings.register('example', Boolean, false, { onChange });
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-          onChange,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example',
+          expect.objectContaining({
+            onChange,
+          }),
+        );
       });
 
-      it.each([true, false])('calls onChange with current value (%j) after init if callOnChangeOnInit=true', (currentValue) => {
-        const getSpy = jest.spyOn(game.settings, 'get').mockImplementation((module, key) => {
-          if (module === 'example-module' && key === 'example') {
-            return currentValue as never;
-          }
-          throw new Error(`Unexpected setting ${module}.${key}`);
-        });
+      it.each([true, false])(
+        'calls onChange with current value (%j) after init if callOnChangeOnInit=true',
+        (currentValue) => {
+          const getSpy = jest.spyOn(game.settings, 'get').mockImplementation((module, key) => {
+            if (module === 'example-module' && key === 'example') {
+              return currentValue as never;
+            }
+            throw new Error(`Unexpected setting ${module}.${key}`);
+          });
 
-        const onChange = jest.fn();
-        const settings = new ModuleSettings('example-module', localize);
-        settings.register('example', Boolean, false, { onChange, callOnChangeOnInit: true });
+          const onChange = jest.fn();
+          const settings = new ModuleSettings('example-module', localize);
+          settings.register('example', Boolean, false, { onChange, callOnChangeOnInit: true });
 
-        expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-          onChange,
-        }));
-        expect(getSpy).toHaveBeenCalledTimes(1);
-        expect(onChange).toHaveBeenCalledTimes(1);
-        expect(onChange).toHaveBeenCalledWith(currentValue);
-      });
+          expect(registerSpy).toHaveBeenCalledTimes(1);
+          expect(registerSpy).toHaveBeenCalledWith(
+            'example-module',
+            'example',
+            expect.objectContaining({
+              onChange,
+            }),
+          );
+          expect(getSpy).toHaveBeenCalledTimes(1);
+          expect(onChange).toHaveBeenCalledTimes(1);
+          expect(onChange).toHaveBeenCalledWith(currentValue);
+        },
+      );
 
-      it.each([false, undefined])('does not call onChange after init if callOnChangeOnInit=%j', (callOnChangeOnInit) => {
-        const onChange = jest.fn();
-        const settings = new ModuleSettings('example-module', localize);
-        settings.register('example', Boolean, false, { onChange, callOnChangeOnInit });
+      it.each([false, undefined])(
+        'does not call onChange after init if callOnChangeOnInit=%j',
+        (callOnChangeOnInit) => {
+          const onChange = jest.fn();
+          const settings = new ModuleSettings('example-module', localize);
+          settings.register('example', Boolean, false, { onChange, callOnChangeOnInit });
 
-        expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-          onChange,
-        }));
-        expect(onChange).not.toHaveBeenCalled();
-      });
+          expect(registerSpy).toHaveBeenCalledTimes(1);
+          expect(registerSpy).toHaveBeenCalledWith(
+            'example-module',
+            'example',
+            expect.objectContaining({
+              onChange,
+            }),
+          );
+          expect(onChange).not.toHaveBeenCalled();
+        },
+      );
     });
 
     describe('choices', () => {
@@ -564,13 +691,17 @@ describe('register', () => {
         });
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example-string', expect.objectContaining({
-          choices: {
-            optionA: 'LOC[setting.example-string.choice.optionA]',
-            optionB: 'LOC[setting.example-string.choice.optionB]',
-            optionC: 'LOC[setting.example-string.choice.optionC]',
-          },
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example-string',
+          expect.objectContaining({
+            choices: {
+              optionA: 'LOC[setting.example-string.choice.optionA]',
+              optionB: 'LOC[setting.example-string.choice.optionB]',
+              optionC: 'LOC[setting.example-string.choice.optionC]',
+            },
+          }),
+        );
       });
 
       it('passes Record<string, string> choices to game.setting.register unaltered', () => {
@@ -587,13 +718,17 @@ describe('register', () => {
         });
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example-string', expect.objectContaining({
-          choices: {
-            optionA: 'My first option',
-            optionB: 'Second',
-            optionC: 'Final choice',
-          },
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example-string',
+          expect.objectContaining({
+            choices: {
+              optionA: 'My first option',
+              optionB: 'Second',
+              optionC: 'Final choice',
+            },
+          }),
+        );
       });
 
       it('converts Record<string, function> to choices object to game.setting.register', () => {
@@ -613,13 +748,17 @@ describe('register', () => {
         });
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example-string', expect.objectContaining({
-          choices: {
-            optionA: 'My first option',
-            optionB: 'Second',
-            optionC: 'Final choice',
-          },
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example-string',
+          expect.objectContaining({
+            choices: {
+              optionA: 'My first option',
+              optionB: 'Second',
+              optionC: 'Final choice',
+            },
+          }),
+        );
 
         expect(optionA).toHaveBeenCalledTimes(1);
         expect(optionB).toHaveBeenCalledTimes(1);
@@ -647,9 +786,13 @@ describe('register', () => {
         settings.register('example-number', Number, 0, { range });
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', 'example-number', expect.objectContaining({
-          range,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example-number',
+          expect.objectContaining({
+            range,
+          }),
+        );
       });
     });
   });
@@ -664,11 +807,15 @@ describe('register', () => {
     Hooks.callAll('init');
 
     expect(registerSpy).toHaveBeenCalledTimes(1);
-    expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-      name: 'Mock Label',
-      type: Boolean,
-      default: false,
-    }));
+    expect(registerSpy).toHaveBeenCalledWith(
+      'example-module',
+      'example',
+      expect.objectContaining({
+        name: 'Mock Label',
+        type: Boolean,
+        default: false,
+      }),
+    );
   });
 
   it('registers all settings regisetered before init after init hook', () => {
@@ -682,16 +829,24 @@ describe('register', () => {
     Hooks.callAll('init');
 
     expect(registerSpy).toHaveBeenCalledTimes(2);
-    expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-      name: 'Mock Label',
-      type: Boolean,
-      default: false,
-    }));
-    expect(registerSpy).toHaveBeenCalledWith('example-module', 'example-string', expect.objectContaining({
-      name: 'Mock Label',
-      type: String,
-      default: 'sample',
-    }));
+    expect(registerSpy).toHaveBeenCalledWith(
+      'example-module',
+      'example',
+      expect.objectContaining({
+        name: 'Mock Label',
+        type: Boolean,
+        default: false,
+      }),
+    );
+    expect(registerSpy).toHaveBeenCalledWith(
+      'example-module',
+      'example-string',
+      expect.objectContaining({
+        name: 'Mock Label',
+        type: String,
+        default: 'sample',
+      }),
+    );
   });
 
   it('does not double register if init hook triggers twice', () => {
@@ -705,11 +860,15 @@ describe('register', () => {
     Hooks.callAll('init');
 
     expect(registerSpy).toHaveBeenCalledTimes(1);
-    expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-      name: 'Mock Label',
-      type: Boolean,
-      default: false,
-    }));
+    expect(registerSpy).toHaveBeenCalledWith(
+      'example-module',
+      'example',
+      expect.objectContaining({
+        name: 'Mock Label',
+        type: Boolean,
+        default: false,
+      }),
+    );
   });
 
   it('calls choices functions after init', () => {
@@ -735,13 +894,17 @@ describe('register', () => {
     Hooks.callAll('init');
 
     expect(registerSpy).toHaveBeenCalledTimes(1);
-    expect(registerSpy).toHaveBeenCalledWith('example-module', 'example-string', expect.objectContaining({
-      choices: {
-        optionA: 'My first option',
-        optionB: 'Second',
-        optionC: 'Final choice',
-      },
-    }));
+    expect(registerSpy).toHaveBeenCalledWith(
+      'example-module',
+      'example-string',
+      expect.objectContaining({
+        choices: {
+          optionA: 'My first option',
+          optionB: 'Second',
+          optionC: 'Final choice',
+        },
+      }),
+    );
 
     expect(optionA).toHaveBeenCalledTimes(1);
     expect(optionB).toHaveBeenCalledTimes(1);
@@ -753,26 +916,22 @@ describe('set', () => {
   const setSpy = jest.spyOn(game.settings, 'set');
 
   describe('namespace', () => {
-    it.each([
-      'example-module',
-      'illandril-chat-enhancements',
-      'illandril-token-tooltips',
-    ] as const)('passes namespace (%s) to game.setting.set', (namespace) => {
-      const settings = new ModuleSettings(namespace, localize);
-      const setting = settings.register('example', Boolean, false);
+    it.each(['example-module', 'illandril-chat-enhancements', 'illandril-token-tooltips'] as const)(
+      'passes namespace (%s) to game.setting.set',
+      (namespace) => {
+        const settings = new ModuleSettings(namespace, localize);
+        const setting = settings.register('example', Boolean, false);
 
-      setting.set(false);
+        setting.set(false);
 
-      expect(setSpy).toHaveBeenCalledTimes(1);
-      expect(setSpy).toHaveBeenCalledWith(namespace, 'example', false);
-    });
+        expect(setSpy).toHaveBeenCalledTimes(1);
+        expect(setSpy).toHaveBeenCalledWith(namespace, 'example', false);
+      },
+    );
   });
 
   describe('key', () => {
-    it.each([
-      'example',
-      'example-boolean',
-    ] as const)('passes key (%s) to game.setting.set', (key) => {
+    it.each(['example', 'example-boolean'] as const)('passes key (%s) to game.setting.set', (key) => {
       const settings = new ModuleSettings('example-module', localize);
       const setting = settings.register(key, Boolean, false);
 
@@ -784,10 +943,7 @@ describe('set', () => {
   });
 
   describe('value', () => {
-    it.each([
-      true,
-      false,
-    ] as const)('passes value (%j) to game.setting.set', (value) => {
+    it.each([true, false] as const)('passes value (%j) to game.setting.set', (value) => {
       const settings = new ModuleSettings('example-module', localize);
       const setting = settings.register('example', Boolean, false);
 
@@ -806,26 +962,22 @@ describe('get', () => {
   });
 
   describe('namespace', () => {
-    it.each([
-      'example-module',
-      'illandril-chat-enhancements',
-      'illandril-token-tooltips',
-    ] as const)('passes namespace (%s) to game.setting.get', (namespace) => {
-      const settings = new ModuleSettings(namespace, localize);
-      const setting = settings.register('example', Boolean, false);
+    it.each(['example-module', 'illandril-chat-enhancements', 'illandril-token-tooltips'] as const)(
+      'passes namespace (%s) to game.setting.get',
+      (namespace) => {
+        const settings = new ModuleSettings(namespace, localize);
+        const setting = settings.register('example', Boolean, false);
 
-      setting.get();
+        setting.get();
 
-      expect(getSpy).toHaveBeenCalledTimes(1);
-      expect(getSpy).toHaveBeenCalledWith(namespace, 'example');
-    });
+        expect(getSpy).toHaveBeenCalledTimes(1);
+        expect(getSpy).toHaveBeenCalledWith(namespace, 'example');
+      },
+    );
   });
 
   describe('key', () => {
-    it.each([
-      'example',
-      'example-boolean',
-    ] as const)('passes key (%s) to game.setting.get', (key) => {
+    it.each(['example', 'example-boolean'] as const)('passes key (%s) to game.setting.get', (key) => {
       const settings = new ModuleSettings('example-module', localize);
       const setting = settings.register(key, Boolean, false);
 
@@ -837,10 +989,7 @@ describe('get', () => {
   });
 
   describe('value', () => {
-    it.each([
-      true,
-      false,
-    ] as const)('returns the value (%j) from game.setting.set', (mockValue) => {
+    it.each([true, false] as const)('returns the value (%j) from game.setting.set', (mockValue) => {
       getSpy.mockReturnValueOnce(mockValue);
 
       const settings = new ModuleSettings('example-module', localize);
@@ -863,48 +1012,52 @@ describe('registerKeybinding', () => {
       Hooks.callAll('init');
     });
 
-    describe.each([
-      'example-module',
-      'illandril-chat-enhancements',
-      'illandril-token-tooltips',
-    ] as const)('namespace: %s', (namespace) => {
-      it('passes namespace to game.keybindings.register', () => {
-        const settings = new ModuleSettings(namespace, localize);
-        settings.registerKeybinding('example', onDown, onUp);
+    describe.each(['example-module', 'illandril-chat-enhancements', 'illandril-token-tooltips'] as const)(
+      'namespace: %s',
+      (namespace) => {
+        it('passes namespace to game.keybindings.register', () => {
+          const settings = new ModuleSettings(namespace, localize);
+          settings.registerKeybinding('example', onDown, onUp);
 
-        expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith(namespace, 'example', expect.any(Object));
-      });
+          expect(registerSpy).toHaveBeenCalledTimes(1);
+          expect(registerSpy).toHaveBeenCalledWith(namespace, 'example', expect.any(Object));
+        });
 
-      it('uses localize for name', () => {
-        const settings = new ModuleSettings(namespace, localize);
-        settings.registerKeybinding('example', onDown, onUp);
+        it('uses localize for name', () => {
+          const settings = new ModuleSettings(namespace, localize);
+          settings.registerKeybinding('example', onDown, onUp);
 
-        expect(localize).toHaveBeenCalledWith('hotkey.example.label');
+          expect(localize).toHaveBeenCalledWith('hotkey.example.label');
 
-        expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith(namespace, 'example', expect.objectContaining({
-          name: `Mock Label`,
-        }));
-      });
+          expect(registerSpy).toHaveBeenCalledTimes(1);
+          expect(registerSpy).toHaveBeenCalledWith(
+            namespace,
+            'example',
+            expect.objectContaining({
+              name: 'Mock Label',
+            }),
+          );
+        });
 
-      it('uses localize for hint', () => {
-        const settings = new ModuleSettings(namespace, localize);
-        settings.registerKeybinding('example', onDown, onUp, { hasHint: true });
+        it('uses localize for hint', () => {
+          const settings = new ModuleSettings(namespace, localize);
+          settings.registerKeybinding('example', onDown, onUp, { hasHint: true });
 
-        expect(localize).toHaveBeenCalledWith('hotkey.example.hint');
+          expect(localize).toHaveBeenCalledWith('hotkey.example.hint');
 
-        expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith(namespace, 'example', expect.objectContaining({
-          hint: `Mock Hint`,
-        }));
-      });
-    });
+          expect(registerSpy).toHaveBeenCalledTimes(1);
+          expect(registerSpy).toHaveBeenCalledWith(
+            namespace,
+            'example',
+            expect.objectContaining({
+              hint: 'Mock Hint',
+            }),
+          );
+        });
+      },
+    );
 
-    describe.each([
-      'example',
-      'sample',
-    ] as const)('key: %s', (key) => {
+    describe.each(['example', 'sample'] as const)('key: %s', (key) => {
       it('passes key to game.keybindings.register', () => {
         const settings = new ModuleSettings('example-module', localize);
         settings.registerKeybinding(key, onDown, onUp);
@@ -920,9 +1073,13 @@ describe('registerKeybinding', () => {
         expect(localize).toHaveBeenCalledWith(`hotkey.${key}.label`);
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', key, expect.objectContaining({
-          name: `Mock Label`,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          key,
+          expect.objectContaining({
+            name: 'Mock Label',
+          }),
+        );
       });
 
       it('uses key in hint', () => {
@@ -932,9 +1089,13 @@ describe('registerKeybinding', () => {
         expect(localize).toHaveBeenCalledWith(`hotkey.${key}.hint`);
 
         expect(registerSpy).toHaveBeenCalledTimes(1);
-        expect(registerSpy).toHaveBeenCalledWith('example-module', key, expect.objectContaining({
-          hint: `Mock Hint`,
-        }));
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          key,
+          expect.objectContaining({
+            hint: 'Mock Hint',
+          }),
+        );
       });
     });
 
@@ -943,9 +1104,13 @@ describe('registerKeybinding', () => {
       settings.registerKeybinding('example', onDown, onUp);
 
       expect(registerSpy).toHaveBeenCalledTimes(1);
-      expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-        hint: undefined,
-      }));
+      expect(registerSpy).toHaveBeenCalledWith(
+        'example-module',
+        'example',
+        expect.objectContaining({
+          hint: undefined,
+        }),
+      );
     });
 
     it('omits hint if hasHint is false', () => {
@@ -955,9 +1120,13 @@ describe('registerKeybinding', () => {
       });
 
       expect(registerSpy).toHaveBeenCalledTimes(1);
-      expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-        hint: undefined,
-      }));
+      expect(registerSpy).toHaveBeenCalledWith(
+        'example-module',
+        'example',
+        expect.objectContaining({
+          hint: undefined,
+        }),
+      );
     });
 
     it('includes hint if hasHint is true', () => {
@@ -967,9 +1136,13 @@ describe('registerKeybinding', () => {
       });
 
       expect(registerSpy).toHaveBeenCalledTimes(1);
-      expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-        hint: 'Mock Hint',
-      }));
+      expect(registerSpy).toHaveBeenCalledWith(
+        'example-module',
+        'example',
+        expect.objectContaining({
+          hint: 'Mock Hint',
+        }),
+      );
     });
 
     it('passes callbacks to game.keybindings.register', () => {
@@ -977,10 +1150,14 @@ describe('registerKeybinding', () => {
       settings.registerKeybinding('example', onDown, onUp);
 
       expect(registerSpy).toHaveBeenCalledTimes(1);
-      expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-        onDown,
-        onUp,
-      }));
+      expect(registerSpy).toHaveBeenCalledWith(
+        'example-module',
+        'example',
+        expect.objectContaining({
+          onDown,
+          onUp,
+        }),
+      );
     });
 
     it.each([true, false])('passes repeat (%j) to game.keybindings.register', (repeat) => {
@@ -990,9 +1167,13 @@ describe('registerKeybinding', () => {
       });
 
       expect(registerSpy).toHaveBeenCalledTimes(1);
-      expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-        repeat,
-      }));
+      expect(registerSpy).toHaveBeenCalledWith(
+        'example-module',
+        'example',
+        expect.objectContaining({
+          repeat,
+        }),
+      );
     });
 
     it.each([true, false])('passes repeat (%j) to game.keybindings.register', (repeat) => {
@@ -1002,9 +1183,13 @@ describe('registerKeybinding', () => {
       });
 
       expect(registerSpy).toHaveBeenCalledTimes(1);
-      expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-        repeat,
-      }));
+      expect(registerSpy).toHaveBeenCalledWith(
+        'example-module',
+        'example',
+        expect.objectContaining({
+          repeat,
+        }),
+      );
     });
 
     it.each([true, false])('passes restricted (%j) to game.keybindings.register', (restricted) => {
@@ -1014,9 +1199,13 @@ describe('registerKeybinding', () => {
       });
 
       expect(registerSpy).toHaveBeenCalledTimes(1);
-      expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-        restricted,
-      }));
+      expect(registerSpy).toHaveBeenCalledWith(
+        'example-module',
+        'example',
+        expect.objectContaining({
+          restricted,
+        }),
+      );
     });
 
     it('passes empty array to editable by default', () => {
@@ -1024,9 +1213,13 @@ describe('registerKeybinding', () => {
       settings.registerKeybinding('example', onDown, onUp);
 
       expect(registerSpy).toHaveBeenCalledTimes(1);
-      expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-        editable: [],
-      }));
+      expect(registerSpy).toHaveBeenCalledWith(
+        'example-module',
+        'example',
+        expect.objectContaining({
+          editable: [],
+        }),
+      );
     });
 
     it('passes defaultKeybindings as editable', () => {
@@ -1044,17 +1237,21 @@ describe('registerKeybinding', () => {
       });
 
       expect(registerSpy).toHaveBeenCalledTimes(1);
-      expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-        editable: [
-          {
-            key: 'A',
-          },
-          {
-            key: 'Mock',
-            modifiers: 'Ctrl',
-          },
-        ],
-      }));
+      expect(registerSpy).toHaveBeenCalledWith(
+        'example-module',
+        'example',
+        expect.objectContaining({
+          editable: [
+            {
+              key: 'A',
+            },
+            {
+              key: 'Mock',
+              modifiers: 'Ctrl',
+            },
+          ],
+        }),
+      );
     });
 
     it('defaults precedence to NORMAL', () => {
@@ -1062,24 +1259,33 @@ describe('registerKeybinding', () => {
       settings.registerKeybinding('example', onDown, onUp);
 
       expect(registerSpy).toHaveBeenCalledTimes(1);
-      expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-        precedence: foundry.CONST.KEYBINDING_PRECEDENCE.NORMAL,
-      }));
+      expect(registerSpy).toHaveBeenCalledWith(
+        'example-module',
+        'example',
+        expect.objectContaining({
+          precedence: foundry.CONST.KEYBINDING_PRECEDENCE.NORMAL,
+        }),
+      );
     });
 
-    it.each(
-      Object.values(foundry.CONST.KEYBINDING_PRECEDENCE),
-    )('passes precedence (%j) to game.keybindings.register', (precedence) => {
-      const settings = new ModuleSettings('example-module', localize);
-      settings.registerKeybinding('example', onDown, onUp, {
-        precedence,
-      });
+    it.each(Object.values(foundry.CONST.KEYBINDING_PRECEDENCE))(
+      'passes precedence (%j) to game.keybindings.register',
+      (precedence) => {
+        const settings = new ModuleSettings('example-module', localize);
+        settings.registerKeybinding('example', onDown, onUp, {
+          precedence,
+        });
 
-      expect(registerSpy).toHaveBeenCalledTimes(1);
-      expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-        precedence,
-      }));
-    });
+        expect(registerSpy).toHaveBeenCalledTimes(1);
+        expect(registerSpy).toHaveBeenCalledWith(
+          'example-module',
+          'example',
+          expect.objectContaining({
+            precedence,
+          }),
+        );
+      },
+    );
 
     it('sanity check for mocked KEYBINDING_PRECEDENCE values', () => {
       // If this isn't correct, the previous 'precedence' tests
@@ -1087,8 +1293,11 @@ describe('registerKeybinding', () => {
       // Note: The specific values used aren't important to the other
       //       tests, only that they are all specified and unique
       expect(foundry.CONST.KEYBINDING_PRECEDENCE).toEqual({
+        // biome-ignore lint/style/useNamingConvention: FoundryVTT defined const
         PRIORITY: 0,
+        // biome-ignore lint/style/useNamingConvention: FoundryVTT defined const
         NORMAL: 1,
+        // biome-ignore lint/style/useNamingConvention: FoundryVTT defined const
         DEFERRED: 2,
       });
     });
@@ -1104,10 +1313,14 @@ describe('registerKeybinding', () => {
     Hooks.callAll('init');
 
     expect(registerSpy).toHaveBeenCalledTimes(1);
-    expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-      onDown,
-      onUp,
-    }));
+    expect(registerSpy).toHaveBeenCalledWith(
+      'example-module',
+      'example',
+      expect.objectContaining({
+        onDown,
+        onUp,
+      }),
+    );
   });
 
   it('registers all settings regisetered before init after init hook', () => {
@@ -1123,14 +1336,22 @@ describe('registerKeybinding', () => {
     Hooks.callAll('init');
 
     expect(registerSpy).toHaveBeenCalledTimes(2);
-    expect(registerSpy).toHaveBeenCalledWith('example-module', 'example1', expect.objectContaining({
-      onDown,
-      onUp,
-    }));
-    expect(registerSpy).toHaveBeenCalledWith('example-module', 'example2', expect.objectContaining({
-      onDown: onDown2,
-      onUp: onUp2,
-    }));
+    expect(registerSpy).toHaveBeenCalledWith(
+      'example-module',
+      'example1',
+      expect.objectContaining({
+        onDown,
+        onUp,
+      }),
+    );
+    expect(registerSpy).toHaveBeenCalledWith(
+      'example-module',
+      'example2',
+      expect.objectContaining({
+        onDown: onDown2,
+        onUp: onUp2,
+      }),
+    );
   });
 
   it('does not double register if init hook triggers twice', () => {
@@ -1144,9 +1365,13 @@ describe('registerKeybinding', () => {
     Hooks.callAll('init');
 
     expect(registerSpy).toHaveBeenCalledTimes(1);
-    expect(registerSpy).toHaveBeenCalledWith('example-module', 'example', expect.objectContaining({
-      onDown,
-      onUp,
-    }));
+    expect(registerSpy).toHaveBeenCalledWith(
+      'example-module',
+      'example',
+      expect.objectContaining({
+        onDown,
+        onUp,
+      }),
+    );
   });
 });

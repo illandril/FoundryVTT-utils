@@ -1,4 +1,4 @@
-import { IllandrilAuthorInfo, generate } from './Manifest';
+import { IllandrilAuthorInfo, generate } from './manifest';
 
 describe('IllandrilAuthorInfo', () => {
   it('has the correct name', () => {
@@ -67,7 +67,7 @@ describe('getStandardFields', () => {
   it('generates illandril-chat-enhancements as expected', () => {
     const chatEnhancements = generate({
       id: 'illandril-chat-enhancements',
-      title: 'Illandril\'s Chat Enhancements',
+      title: "Illandril's Chat Enhancements",
       description: 'Enhances the chat by showing...',
       version: '2.0.0',
       compatibility: {

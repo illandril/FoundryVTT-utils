@@ -5,6 +5,5 @@ game.actors.get = (key, options?: { strict: true }) => {
   return undefined as unknown as Actor;
 };
 game.actors.find = () => {
-  throw new Error(`Not Mocked: game.actors.find(...)`);
+  throw new Error('Not Mocked: game.actors.find(...)');
 };
-
