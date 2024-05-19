@@ -94,41 +94,17 @@ type ManifestOptions = {
   media?: NonEmptyArray<MediaOptions>;
 };
 
-export const generate = ({
-  id,
-  title,
-  description,
-  version,
-  compatibility,
-  authors,
-  relationships,
-  esmodules,
-  styles,
-  languages,
-  license,
-  repositoryURL,
-  media,
-}: ManifestOptions) => {
+export const generate = ({ version, repositoryURL, ...rest }: ManifestOptions) => {
   const baseRepoURL = repositoryURL.substring(4, repositoryURL.length - 4);
   return {
-    id,
-    title,
-    description,
     version,
     manifestPlusVersion: '1.2.0',
-    authors,
-    license,
-    compatibility,
-    relationships,
-    esmodules,
-    styles,
-    languages,
     url: baseRepoURL,
     bugs: `${baseRepoURL}/issues`,
     flags: { allowBugReporter: true },
     changelog: `${baseRepoURL}/releases`,
     manifest: `${baseRepoURL}/releases/latest/download/module.json`,
     download: `${baseRepoURL}/releases/download/v${version}/module.zip`,
-    media,
+    ...rest,
   };
 };
