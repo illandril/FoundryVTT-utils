@@ -34,3 +34,12 @@
     }, delay);
   };
 };
+
+let idCount = 0;
+(
+  foundry.utils as {
+    randomID: typeof foundry.utils.randomID;
+  }
+).randomID = () => {
+  return `mock-random-id-${++idCount}`;
+};
