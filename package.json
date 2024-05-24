@@ -2,14 +2,27 @@
   "name": "@illandril/foundryvtt-utils",
   "version": "10.0.3",
   "description": "Common utilities used by illandril's FoundryVTT modules",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
-    "./manifest": "./dist/manifest.js",
-    "./tests/globals": "./dist/tests/globals.js",
-    "./tests/setup": "./dist/tests/setup.js",
-    "./tests/setupAfterEnv": "./dist/tests/setupAfterEnv.js"
+    ".": {
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./manifest": {
+      "default": "./dist/manifest.js",
+      "types": "./dist/manifest.d.ts"
+    },
+    "./tests/globals": {
+      "default": "./dist/tests/globals.js",
+      "types": "./dist/tests/globals.d.ts"
+    },
+    "./tests/setup": {
+      "default": "./dist/tests/setup.js",
+      "types": "./dist/tests/setup.d.ts"
+    },
+    "./tests/setupAfterEnv": {
+      "default": "./dist/tests/setupAfterEnv.js",
+      "types": "./dist/tests/setupAfterEnv.d.ts"
+    }
   },
   "files": [
     "dist",
