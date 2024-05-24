@@ -2,11 +2,10 @@
   "name": "@illandril/foundryvtt-utils",
   "version": "10.0.4",
   "description": "Common utilities used by illandril's FoundryVTT modules",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
-    ".": {
-      "default": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
+    ".": "./dist/index.js",
     "./manifest": {
       "default": "./dist/manifest.js",
       "types": "./dist/manifest.d.ts"
