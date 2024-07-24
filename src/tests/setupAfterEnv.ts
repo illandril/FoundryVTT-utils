@@ -5,8 +5,6 @@ import './setup/Hooks';
 import './setup/Templates';
 import './setup/ui';
 
-Math.clamped = (num, min, max) => Math.min(max, Math.max(num, min));
-
 String.prototype.titleCase = function (this: string): string {
   if (!this.length) {
     return this;

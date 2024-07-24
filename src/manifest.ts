@@ -92,16 +92,20 @@ type ManifestOptions = {
   readme?: string;
   repositoryURL: `git+https://github.com/${string}.git`;
   media?: NonEmptyArray<MediaOptions>;
+  flags?: Partial<Record<string, unknown>>;
 };
 
-export const generate = ({ version, repositoryURL, ...rest }: ManifestOptions) => {
+export const generate = ({ version, repositoryURL, flags, ...rest }: ManifestOptions) => {
   const baseRepoURL = repositoryURL.substring(4, repositoryURL.length - 4);
   return {
     version,
     manifestPlusVersion: '1.2.0',
     url: baseRepoURL,
     bugs: `${baseRepoURL}/issues`,
-    flags: { allowBugReporter: true },
+    flags: {
+      allowBugReporter: true,
+      ...flags,
+    },
     changelog: `${baseRepoURL}/releases`,
     manifest: `${baseRepoURL}/releases/latest/download/module.json`,
     download: `${baseRepoURL}/releases/download/v${version}/module.zip`,
